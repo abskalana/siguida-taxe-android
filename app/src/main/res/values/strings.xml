@@ -1,0 +1,92 @@
+<resources>
+    <string name="app_name">Siguida taxe Pro</string>
+     <string-array name="locations_array">
+        <item>Kalana</item>
+         <item>Niessoumala</item>
+    </string-array>
+
+    <string-array name="place_array">
+        <item >"Selectionner une place"</item>
+        <item>Kalana Centre</item>
+        <item>Kalana Koko</item>
+        <item>Kalana Kelibougou</item>
+        <item>Kalana Camp coroni</item>
+        <item>Kalana Camp</item>
+        <item>Kalana Dabaranbougou</item>
+   </string-array>
+    <string-array name="status_array">
+        <item>SELECTIONNER UN ETAT</item>
+        <item>PAYÉ</item>
+        <item>REFUS</item>
+        <item>FERMÉ</item>
+        <item>ABSENT</item>
+        <item>PAYÉ A LA MAIRIE</item>
+        <item>AUTRE</item>
+    </string-array>
+
+    <string-array name="categories_array">
+        <item >"Selectionner une categorie"</item>
+        <item>Boutique divers</item>
+        <item>Boutique spécialisée</item>
+        <item>Autres commerces</item>
+        <item>Autres services</item>
+        <item>Alimentation</item>
+        <item>Boucherie</item>
+        <item>Boulangerie</item>
+        <item>Coiffure</item>
+        <item>Couture</item>
+        <item>Electronique</item>
+        <item>Formation</item>
+        <item>Garage Moto</item>
+        <item>Garage Auto</item>
+        <item>Garage Pneu</item>
+        <item>Grabale</item>
+        <item>Poissonnerie</item>
+        <item>Volaille</item>
+        <item>Industrie bois</item>
+        <item>Industrie metallique</item>
+        <item>Lavage</item>
+        <item>Loisir</item>
+        <item>Magasin de depots</item>
+        <item>Magasin fermée</item>
+        <item>Moulin</item>
+        <item>Or</item>
+        <item>Quincaillerie</item>
+        <item>Rebobinage</item>
+        <item>Restauration</item>
+        <item>Santé</item>
+        <item>Service reparation</item>
+        <item>Table Fruits</item>
+        <item>Table condiments</item>
+        <item>Transfert financier</item>
+        <item>Media</item>
+        <item>Katakatani</item>
+        <item>Moto Taxi</item>
+        <item>Transport</item>
+        <item>Textile</item>
+        <item>Technologie</item>
+        <item>Restaurant</item>
+        <item>Boisson</item>
+    </string-array>
+
+    <string-array name="propertie">
+        <item>PRIVEE</item>
+        <item>ESPACE PUBLIC</item>
+        <item>MARCHE</item>
+    </string-array>
+
+
+
+    <string-array name="type_entity">
+        <item>MAISON</item>
+        <item>HANGAR</item>
+        <item>METAL</item>
+        <item>TABLE</item>
+    </string-array>
+
+    <string-array name="type_etat">
+        <item>OUVERT</item>
+        <item>ABSENT</item>
+        <item>FERME</item>
+    </string-array>
+</resources>
