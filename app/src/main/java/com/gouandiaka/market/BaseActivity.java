@@ -20,6 +20,7 @@ public class BaseActivity extends Activity  implements LocationListener {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocalDatabase.init(this);
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 4, this);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);

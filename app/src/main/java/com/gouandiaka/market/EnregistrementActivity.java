@@ -71,7 +71,7 @@ public class EnregistrementActivity extends BaseActivity {
                 model.setTypeProperty(spinnerType.getSelectedItem().toString());
                 model.setStatus(spinnerEtat.getSelectedItem().toString());
                 model.setCoord(coord);
-               LocalDatabase.instance().addEntity(model);
+                LocalDatabase.instance().addEntity(model);
                 clear();
 
 

@@ -5,14 +5,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.gouandiaka.market.entity.Entity;
+
+import java.util.List;
 
 public class ConfigActivity extends BaseActivity {
 
     Spinner spinnerVille,spinnerNature,spinnerPlace;
 
     EditText editTextCommune;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +29,7 @@ public class ConfigActivity extends BaseActivity {
         spinnerPlace=findViewById(R.id.spinnerPlace);
         int villeNum = PrefUtils.getInt("ville_num");
         spinnerVille.setSelection(villeNum);
+        progressBar = findViewById(R.id.progressBar);
 
         int placeNum = PrefUtils.getInt("place_num");
         spinnerPlace.setSelection(placeNum);
@@ -64,6 +71,15 @@ public class ConfigActivity extends BaseActivity {
 
             }
         });
+
+       findViewById(R.id.btnLoca).setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+
+               HttpHelper.syncEntity(ConfigActivity.this,progressBar);
+
+           }
+       });
 
     }
 

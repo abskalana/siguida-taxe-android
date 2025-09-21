@@ -1,15 +1,18 @@
 package com.gouandiaka.market;
 
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.EntityResponse;
 import com.gouandiaka.market.entity.MyExpandableListAdapter;
@@ -26,7 +29,7 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
     private EntityResponse entityResponse;
     List<String> listGroup;
     List<Entity> allEntities;
-    HashMap<String, List<String>> listItem;
+    HashMap<String, List<Entity>> listItem;
     MyExpandableListAdapter adapter;
 
     @Override
@@ -39,11 +42,20 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
         allEntities = entityResponse.getEntities();
         listGroup = new ArrayList<>();
         listItem = new HashMap<>();
-
         adapter = new MyExpandableListAdapter(this, listGroup, listItem);
         expandableListView.setAdapter(adapter);
 
         populateList(allEntities);
+
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                Entity localePlace = (Entity) adapter.getChild(groupPosition, childPosition);
+                Utils.launchPayConfirmActivity(PayRechercheActivity.this,localePlace);
+                return false;
+            }
+        });
 
 // Filtrage dynamique
         editTextFilter.addTextChangedListener(new TextWatcher() {
@@ -84,8 +96,7 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
                 listItem.put(groupName, new ArrayList<>());
             }
 
-            String childText = e.getContactNom() + " " + e.getContactPrenom() + " - " + e.getContactPhone();
-            listItem.get(groupName).add(childText);
+            listItem.get(groupName).add(e);
         }
 
         adapter.notifyDataSetChanged();

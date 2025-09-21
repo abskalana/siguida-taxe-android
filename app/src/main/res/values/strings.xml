@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">Siguida taxe Pro</string>
-     <string-array name="locations_array">
+    <string name="waiting_message">Chargement en cours. Veuillez patienter</string>
+    <string name="error_loading">Une erreur s\'est produite. Vérifier votre connexion internet</string>
+
+    <string-array name="locations_array">
         <item>Kalana</item>
-         <item>Niessoumala</item>
-    </string-array>
+      </string-array>
 
     <string-array name="place_array">
         <item >"Selectionner une place"</item>

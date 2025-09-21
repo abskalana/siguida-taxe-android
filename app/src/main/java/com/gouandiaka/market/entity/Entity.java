@@ -7,7 +7,12 @@ import com.gouandiaka.market.Utils;
 
 public class Entity {
 
+    private String id;
     private final String  commune;
+
+    public String getId() {
+        return id;
+    }
 
     private final String city;
 
@@ -128,6 +133,10 @@ public class Entity {
 
     public String getActivity() {
         return this.activity;
+    }
+
+    public String getNomComplet() {
+        return this.contactPrenom + " "+ this.contactNom.toUpperCase();
     }
 }
 

@@ -32,9 +32,7 @@
             android:name=".EnregistrementActivity"
             />
 
-        <activity
-            android:name=".HomeActivity"
-            />
+
 
         <activity
             android:name=".ConfigActivity"
@@ -42,6 +40,10 @@
 
         <activity
             android:name=".PayConfirmActivity"
+            />
+
+        <activity
+            android:name=".MainActivity"
             />
 
         <activity

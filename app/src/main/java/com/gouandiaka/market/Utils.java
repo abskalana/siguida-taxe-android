@@ -3,6 +3,11 @@ package com.gouandiaka.market;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.gouandiaka.market.entity.Entity;
+import com.gouandiaka.market.entity.EntityResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,13 +18,24 @@ public class Utils {
 
 
     public static void launchEnregistrementActivity(Context context) {
+        Entity model = PrefUtils.getEntity();
+        if(model.isInCorrect()){
+            Toast.makeText(context, "Il faut configurer commune", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(context, EnregistrementActivity.class);
         context.startActivity(intent);
     }
 
     public static void launchAccueilActivity(Context context) {
-        Intent intent = new Intent(context, HomeActivity.class);
+        Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void launchPayConfirmActivity(Context context, Entity entity) {
+        Intent intent = new Intent(context, PayConfirmActivity.class);
+        intent.putExtra("entity",  new Gson().toJson(entity));
         context.startActivity(intent);
     }
     public static void launchConfigActivity(Context context) {
@@ -28,7 +44,13 @@ public class Utils {
     }
 
     public static void launchPaiementActivity(Context context) {
-
+        EntityResponse res =  LocalDatabase.instance().getRemoteModel() ;
+        if(res == null || res.getEntities().isEmpty()){
+            Toast.makeText(context, "Il faut charger", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(context, PayRechercheActivity.class);
+        context.startActivity(intent);
     }
 
     public static  boolean isKalana(String ville){

@@ -8,14 +8,15 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<String> listGroup; // Groupes (activity)
-    private HashMap<String, List<String>> listItem; // Enfants (Nom Prenom - Téléphone)
+    private HashMap<String, List<Entity>> listItem; // Enfants (Nom Prenom - Téléphone)
 
-    public MyExpandableListAdapter(Context context, List<String> listGroup, HashMap<String, List<String>> listItem) {
+    public MyExpandableListAdapter(Context context, List<String> listGroup, HashMap<String, List<Entity>> listItem) {
         this.context = context;
         this.listGroup = listGroup;
         this.listItem = listItem;
@@ -60,24 +61,28 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String groupTitle = (String) getGroup(groupPosition);
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(android.R.layout.simple_expandable_list_item_1, parent, false);
+        if (convertView != null) {
+            GroupingItemView placeItemView = (GroupingItemView) convertView;
+            placeItemView.reuse(groupTitle);
+            return placeItemView;
         }
-        TextView textView = convertView.findViewById(android.R.id.text1);
-        textView.setText(groupTitle);
-        return convertView;
+        return new GroupingItemView(parent.getContext(), groupTitle);
+
     }
 
     // Vue pour l'enfant
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        String childText = (String) getChild(groupPosition, childPosition);
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
+
+        String title = listGroup.get(groupPosition);
+
+        Entity localePlace = Objects.requireNonNull(listItem.get(title)).get(childPosition);
+        if (convertView instanceof PlacesItemView) {
+            PlacesItemView placesItemView = (PlacesItemView) convertView;
+            placesItemView.reuse(localePlace.getContactNom(), localePlace.getContactPrenom(), localePlace.getContactPhone());
         }
-        TextView textView = convertView.findViewById(android.R.id.text1);
-        textView.setText(childText); // Affiche Nom Prenom - Téléphone
-        return convertView;
+        return new PlacesItemView(parent.getContext(), localePlace.getContactNom(), localePlace.getContactPrenom(), localePlace.getContactPhone());
+
     }
 
     @Override
