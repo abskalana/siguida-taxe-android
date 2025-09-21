@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
             if (response == null) {
                 runOnUiThread(() -> {
                     waitingView.setVisibility(View.GONE);
-                    Toast.makeText(context, "Success ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "ECHEC ", Toast.LENGTH_SHORT).show();
                 });
             } else {
                 runOnUiThread(() -> {

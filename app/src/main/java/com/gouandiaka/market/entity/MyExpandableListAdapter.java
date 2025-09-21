@@ -6,20 +6,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private Context context;
-    private List<String> listGroup; // Groupes (activity)
-    private HashMap<String, List<Entity>> listItem; // Enfants (Nom Prenom - Téléphone)
 
-    public MyExpandableListAdapter(Context context, List<String> listGroup, HashMap<String, List<Entity>> listItem) {
-        this.context = context;
-        this.listGroup = listGroup;
-        this.listItem = listItem;
+    private List<String> listGroup;
+    private HashMap<String, List<Entity>> listItem;
+
+    public MyExpandableListAdapter(List<Entity> entities,String locality) {
+        this.listItem = new HashMap<>();
+        this.listGroup = new ArrayList<>();
+        for (Entity e : entities) {
+            if(locality == null || (!locality.equalsIgnoreCase(e.getLocality()) && !locality.equalsIgnoreCase(e.getCity()))){
+                continue;
+            }
+            String groupName = e.getActivity();
+            if (!listGroup.contains(groupName)) {
+                listGroup.add(groupName);
+                listItem.put(groupName, new ArrayList<>());
+            }
+            listItem.get(groupName).add(e);
+        }
     }
 
     @Override
@@ -61,7 +73,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String groupTitle = (String) getGroup(groupPosition);
-        if (convertView != null) {
+        if (convertView instanceof  GroupingItemView) {
             GroupingItemView placeItemView = (GroupingItemView) convertView;
             placeItemView.reuse(groupTitle);
             return placeItemView;
@@ -80,6 +92,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView instanceof PlacesItemView) {
             PlacesItemView placesItemView = (PlacesItemView) convertView;
             placesItemView.reuse(localePlace.getContactNom(), localePlace.getContactPrenom(), localePlace.getContactPhone());
+            return placesItemView;
         }
         return new PlacesItemView(parent.getContext(), localePlace.getContactNom(), localePlace.getContactPrenom(), localePlace.getContactPhone());
 

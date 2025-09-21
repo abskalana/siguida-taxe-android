@@ -15,6 +15,7 @@
         <item>Kalana Camp coroni</item>
         <item>Kalana Camp</item>
         <item>Kalana Dabaranbougou</item>
+        <item>Kalana</item>
    </string-array>
     <string-array name="status_array">
         <item>Selectionner un état</item>
@@ -22,7 +23,7 @@
         <item>REFUS</item>
         <item>FERMÉ</item>
         <item>ABSENT</item>
-        <item>PAYÉ A LA MAIRIE</item>
+        <item>PAYE_MAIRIE</item>
         <item>AUTRE</item>
     </string-array>
 

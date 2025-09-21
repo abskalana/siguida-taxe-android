@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 import com.gouandiaka.market.utils.Utils;
 
+import java.util.Objects;
+
 public class Entity {
 
     private String id;
@@ -12,6 +14,18 @@ public class Entity {
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Entity entity = (Entity) o;
+        return Objects.equals(id, entity.id) && Objects.equals(commune, entity.commune) && Objects.equals(city, entity.city);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, commune, city);
     }
 
     private final String city;

@@ -26,6 +26,7 @@ import java.util.List;
 public class PayRechercheActivity extends BaseActivity implements LocationListener {
 
     private EditText editTextFilter;
+    private  String locality;
     private ExpandableListView expandableListView;
 
     private EntityResponse entityResponse;
@@ -44,11 +45,9 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
         allEntities = entityResponse.getEntities();
         listGroup = new ArrayList<>();
         listItem = new HashMap<>();
-        adapter = new MyExpandableListAdapter(this, listGroup, listItem);
+        String locality = PrefUtils.getString("place");
+        adapter = new MyExpandableListAdapter( allEntities,locality);
         expandableListView.setAdapter(adapter);
-
-        populateList(allEntities);
-
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
@@ -81,34 +80,18 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
                         filtered.add(e);
                     }
                 }
-                populateList(filtered);
+                adapter = new MyExpandableListAdapter( filtered,locality);
+                expandableListView.setAdapter(adapter);
             }
         });
 
     }
 
-    void populateList(List<Entity> entities) {
-        listGroup.clear();
-        listItem.clear();
-
-        for (Entity e : entities) {
-            String groupName = e.getActivity();
-
-            if (!listGroup.contains(groupName)) {
-                listGroup.add(groupName);
-                listItem.put(groupName, new ArrayList<>());
-            }
-
-            listItem.get(groupName).add(e);
-        }
-
-        adapter.notifyDataSetChanged();
-    }
 
     @Override
     public void onLocationChanged(@NonNull Location locations) {
         String place = PrefUtils.getString("place",null);
         if(Utils.isEmpty(place) ) return;
-        populateList(entityResponse.filter(place, locations));
+
     }
 }

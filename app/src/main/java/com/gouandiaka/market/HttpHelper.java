@@ -138,32 +138,19 @@ public class HttpHelper {
         }
     }
 
-    public static   String makeRequest(){
-        String content = LocalDatabase.instance().getModel();
-        Log.d("xxxx", content);
-        boolean b1 = true;
-        if(!Utils.isEmpty(content)){
-            b1 = HttpHelper.postEntity(HttpHelper.REQUEST_POST,content);
-            if(b1){
-                LocalDatabase.instance().clearLocaleTraffic();
-            }
-        }
-        if(!b1){
-            return "Echec enregistrement";
-        }
-
-        String result = LocalDatabase.instance().getPaiement();
+    public static String makeRequest(){
+         String result = LocalDatabase.instance().getPaiement();
+         Log.i("xxxxx", result == null ? " ": result);
         if(!Utils.isEmpty(result)){
-            b1 = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT,result);
+           boolean b1 = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT,result);
             if(b1){
                 LocalDatabase.instance().clearPaiement();
+                return "SUCCESS";
             }
+            return null;
         }
-        if(!b1) {
-            return "Echec  Paiement";
-        }
+        return "AUCUN PAIEMENT EN COURS";
 
-        return null;
 
     }
 
