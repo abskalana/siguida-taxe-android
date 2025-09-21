@@ -17,7 +17,7 @@
         <item>Kalana Dabaranbougou</item>
    </string-array>
     <string-array name="status_array">
-        <item>SELECTIONNER UN ETAT</item>
+        <item>Selectionner un état</item>
         <item>PAYÉ</item>
         <item>REFUS</item>
         <item>FERMÉ</item>
@@ -90,5 +90,13 @@
         <item>OUVERT</item>
         <item>ABSENT</item>
         <item>FERME</item>
+    </string-array>
+
+    <string-array name="type_ticket">
+        <item >"Select un type"</item>
+        <item>TK100</item>
+        <item>TK500</item>
+        <item>TK1000</item>
+        <item>TK5000</item>
     </string-array>
 </resources>

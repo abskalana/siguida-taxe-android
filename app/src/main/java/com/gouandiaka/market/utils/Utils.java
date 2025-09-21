@@ -1,4 +1,4 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,12 @@ import android.location.Location;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.activity.ConfigActivity;
+import com.gouandiaka.market.activity.EnregistrementActivity;
+import com.gouandiaka.market.activity.MainActivity;
+import com.gouandiaka.market.activity.PayConfirmActivity;
+import com.gouandiaka.market.activity.PayRechercheActivity;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.EntityResponse;
 
@@ -100,6 +106,10 @@ public class Utils {
         return latitude + ";" + longitude ;
     }
 
+    public static boolean isSelectOrEmpty(String str){
+        return Utils.isEmpty(str) || str.toLowerCase().startsWith("select");
+    }
+
     public static Location convertToLocation(String location) {
         try{
             if (Utils.isEmpty(location)) return null;
@@ -111,6 +121,8 @@ public class Utils {
         }catch (Exception e){
             return null;
         }
+
+
 
     }
 

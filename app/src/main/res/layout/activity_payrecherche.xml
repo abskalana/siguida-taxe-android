@@ -18,10 +18,11 @@
            android:textStyle="normal|bold"></TextView>
 
         <EditText
+            android:padding="8dp"
             android:id="@+id/editTextFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Filtrer par nom, prenom ou téléphone"/>
+            android:hint="Rechercher"/>
 
         <ExpandableListView
             android:id="@+id/expandableListView"

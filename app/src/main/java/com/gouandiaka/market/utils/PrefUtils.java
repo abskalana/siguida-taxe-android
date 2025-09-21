@@ -1,4 +1,4 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

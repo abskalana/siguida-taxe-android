@@ -1,4 +1,4 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.activity;
 
 import android.graphics.Color;
 import android.location.Location;
@@ -11,6 +11,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.utils.LocationUtils;
+import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.R;
+import com.gouandiaka.market.utils.Utils;
 import com.gouandiaka.market.entity.Entity;
 
 public class EnregistrementActivity extends BaseActivity {
@@ -72,9 +77,8 @@ public class EnregistrementActivity extends BaseActivity {
                 model.setStatus(spinnerEtat.getSelectedItem().toString());
                 model.setCoord(coord);
                 LocalDatabase.instance().addEntity(model);
-                clear();
-
-
+                Toast.makeText(EnregistrementActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
 
@@ -86,18 +90,6 @@ public class EnregistrementActivity extends BaseActivity {
         LocationUtils.setupLocation(this);
     }
 
-    private void clear(){
-        editTextnbrPorte.setText("");
-        editTexttelephone.setText("");
-        editTextNom.setText("");
-        editTextPreNom.setText("");
-        spinnerCategories.setSelection(0);
-        spinnerType.setSelection(0);
-        coord = null;
-        gpsView.setText("-----");
-        gpsView.setTextColor(Color.RED);
-
-    }
     @Override
     public void onLocationChanged(@NonNull Location location) {
         super.onLocationChanged(location);

@@ -3,7 +3,7 @@ package com.gouandiaka.market.entity;
 import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-import com.gouandiaka.market.Utils;
+import com.gouandiaka.market.utils.Utils;
 
 public class Entity {
 
@@ -137,6 +137,21 @@ public class Entity {
 
     public String getNomComplet() {
         return this.contactPrenom + " "+ this.contactNom.toUpperCase();
+    }
+
+    public String getTelephone1(){
+        if(Utils.isEmpty(this.contactPhone)) return null;
+        if(this.contactPhone.split(",").length > 0)return this.contactPhone.split(",")[0];
+        return  null;
+    }
+    public String getTelephone2(){
+        if(Utils.isEmpty(this.contactPhone)) return null;
+        if(this.contactPhone.split(",").length > 1)return this.contactPhone.split(",")[1];
+        return  null;
+    }
+
+    public String getInfo() {
+        return "#Porte : " + this.porte + " -  "+ this.property.toUpperCase()+ "  -  "+ this.activity;
     }
 }
 

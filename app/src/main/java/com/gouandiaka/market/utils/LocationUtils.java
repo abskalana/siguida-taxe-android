@@ -1,9 +1,6 @@
-package com.gouandiaka.market;
-
-import static androidx.core.content.ContextCompat.startActivity;
+package com.gouandiaka.market.utils;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;

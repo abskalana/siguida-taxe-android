@@ -1,4 +1,4 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,9 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.gouandiaka.market.HttpHelper;
+import com.gouandiaka.market.utils.LocationUtils;
+import com.gouandiaka.market.R;
+import com.gouandiaka.market.utils.Utils;
+
 public class MainActivity extends Activity {
 
-    View waitingView;
+    private View waitingView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

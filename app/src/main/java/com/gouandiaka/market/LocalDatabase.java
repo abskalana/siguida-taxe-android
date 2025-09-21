@@ -67,9 +67,6 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
 
 
-    public synchronized void clearLocaleTraffic() {
-        db.delete("table_model", null, null);
-    }
 
     public String getModel() {
         Cursor cursor = db.query("table_model", null, null, null, null, null, null, null);
@@ -131,7 +128,11 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
 
     public void clearPaiement() {
-
+        db.delete("table_paiement_model", null, null);
 
     }
+    public synchronized void clearLocaleTraffic() {
+        db.delete("table_model", null, null);
+    }
+
 }

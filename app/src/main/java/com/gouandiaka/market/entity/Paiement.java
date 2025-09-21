@@ -1,5 +1,6 @@
 package com.gouandiaka.market.entity;
 import com.google.gson.annotations.SerializedName;
+import com.gouandiaka.market.utils.Utils;
 
 public class Paiement {
 
@@ -7,13 +8,10 @@ public class Paiement {
     private int value;
 
     @SerializedName("ticket_num")
-    private int ticketNum;
+    private String ticketNum;
 
     @SerializedName("ticket_type")
     private String ticketType;
-
-    @SerializedName("date")
-    private String date;   // ou Date si tu veux parser avec Gson + DateFormat
 
     @SerializedName("status")
     private String status;
@@ -30,19 +28,20 @@ public class Paiement {
     @SerializedName("commentaire")
     private String commentaire;
 
+    public Paiement(int user, String entityModel) {
+        this.user = user;
+        this.entityModel = entityModel;
+    }
+
     public int getValue() { return value; }
     public void setValue(int value) { this.value = value; }
 
-    public int getTicketNum() { return ticketNum; }
-    public void setTicketNum(int ticketNum) { this.ticketNum = ticketNum; }
+    public String getTicketNum() { return ticketNum; }
+    public void setTicketNum(String ticketNum) { this.ticketNum = ticketNum; }
 
     public String getTicketType() { return ticketType; }
     public void setTicketType(String ticketType) { this.ticketType = ticketType; }
 
-
-
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
@@ -59,5 +58,10 @@ public class Paiement {
     public String getCommentaire() { return commentaire; }
     public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
 
+
+    public static boolean isValid(Paiement paiement){
+        if(paiement == null || Math.min(paiement.user,paiement.value) < 0 || Utils.isEmpty(paiement.entityModel)) return false;
+        return !Utils.isEmpty(paiement.ticketNum) && !Utils.isEmpty(paiement.ticketType);
+    }
 
 }

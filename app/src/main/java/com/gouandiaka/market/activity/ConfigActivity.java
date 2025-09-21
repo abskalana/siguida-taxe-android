@@ -1,17 +1,16 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.gouandiaka.market.entity.Entity;
-
-import java.util.List;
+import com.gouandiaka.market.HttpHelper;
+import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.R;
+import com.gouandiaka.market.utils.Utils;
 
 public class ConfigActivity extends BaseActivity {
 
@@ -65,7 +64,7 @@ public class ConfigActivity extends BaseActivity {
                 PrefUtils.setInt("ville_num", spinnerVille.getSelectedItemPosition());
                 PrefUtils.setInt("place_num", spinnerPlace.getSelectedItemPosition());
                 PrefUtils.save("commune", "150202");
-                Toast.makeText(ConfigActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ConfigActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
                 finish();
 
 

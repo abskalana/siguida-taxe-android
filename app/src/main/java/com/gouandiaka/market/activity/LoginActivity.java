@@ -1,12 +1,17 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.gouandiaka.market.HttpHelper;
+import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.R;
+import com.gouandiaka.market.utils.Utils;
 
 public class LoginActivity extends Activity {
 

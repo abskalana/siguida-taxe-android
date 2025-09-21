@@ -2,7 +2,7 @@ package com.gouandiaka.market.entity;
 
 import android.location.Location;
 
-import com.gouandiaka.market.Utils;
+import com.gouandiaka.market.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

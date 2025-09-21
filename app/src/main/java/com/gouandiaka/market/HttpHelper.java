@@ -1,6 +1,5 @@
 package com.gouandiaka.market;
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -9,11 +8,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.entity.Entity;
-
-import org.json.JSONObject;
+import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.utils.Utils;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
@@ -23,6 +21,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 public class HttpHelper {
+
 
     public static final String REQUEST_POST = "https://siguidataxe.com/api/entity/create/";
     public static final String REQUEST_PAIEMENT = "https://siguidataxe.com/api/paiement/create/";
@@ -139,8 +138,9 @@ public class HttpHelper {
         }
     }
 
-    public static   String   makeRequest(){
+    public static   String makeRequest(){
         String content = LocalDatabase.instance().getModel();
+        Log.d("xxxx", content);
         boolean b1 = true;
         if(!Utils.isEmpty(content)){
             b1 = HttpHelper.postEntity(HttpHelper.REQUEST_POST,content);
@@ -172,7 +172,16 @@ public class HttpHelper {
         new Thread(() -> {
             String content = LocalDatabase.instance().getModel();
             if(!Utils.isEmpty(content)){
-                HttpHelper.postEntity(HttpHelper.REQUEST_POST,content);
+                boolean b = HttpHelper.postEntity(HttpHelper.REQUEST_POST,content);
+                if(b) LocalDatabase.instance().clearLocaleTraffic();
+            }
+
+            String result = LocalDatabase.instance().getPaiement();
+            if(!Utils.isEmpty(result)){
+                boolean b1 = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT,result);
+                if(b1){
+                    LocalDatabase.instance().clearPaiement();
+                }
             }
             List<Entity> response = HttpHelper.getEntities(HttpHelper.REQUEST_POST);
 
@@ -186,6 +195,7 @@ public class HttpHelper {
                     view.setVisibility(View.GONE);
                     LocalDatabase.instance().addRemoveEntity(response);
                     Toast.makeText(context, "SUCCESS", Toast.LENGTH_SHORT).show();
+
                 });
             }
         }).start();

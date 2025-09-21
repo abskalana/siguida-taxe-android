@@ -1,6 +1,5 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.activity;
 
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -12,7 +11,10 @@ import android.widget.ExpandableListView;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.Gson;
+import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.R;
+import com.gouandiaka.market.utils.Utils;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.EntityResponse;
 import com.gouandiaka.market.entity.MyExpandableListAdapter;
@@ -70,6 +72,7 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
             @Override
             public void afterTextChanged(Editable s) {
                 String filter = s.toString().toLowerCase();
+                if(Utils.isEmpty(filter)) return;
                 List<Entity> filtered = new ArrayList<>();
                 for (Entity e : allEntities) {
                     if (e.getContactNom().toLowerCase().contains(filter) ||
