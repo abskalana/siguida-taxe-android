@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="vertical"
     android:padding="16dp">
 
 
@@ -27,19 +28,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginBottom="20dp"
             android:text="-----"
             android:id="@+id/gps_view"
             android:textSize="14sp">
 
         </TextView>
-        <EditText
-            android:id="@+id/etNom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nom"
-            android:layout_margin="5dp"
-            android:inputType="textPersonName" />
 
         <EditText
             android:layout_margin="5dp"
@@ -48,6 +41,16 @@
             android:layout_height="wrap_content"
             android:hint="Prénom"
             android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/etNom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nom"
+            android:layout_margin="5dp"
+            android:inputType="textPersonName" />
+
+
 
         <EditText
             android:layout_margin="5dp"

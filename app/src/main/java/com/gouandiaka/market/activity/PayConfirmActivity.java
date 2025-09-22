@@ -1,14 +1,17 @@
 package com.gouandiaka.market.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.util.Linkify;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.gouandiaka.market.LocalDatabase;
@@ -27,6 +30,8 @@ public class PayConfirmActivity extends BaseActivity {
     private Paiement paiement;
     private  TextView phone1, phone2;
 
+    private TextView gpsView;
+
 
         @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,8 @@ public class PayConfirmActivity extends BaseActivity {
         editTextCmt = findViewById(R.id.tv_comment);
         phone1 = ((TextView) findViewById(R.id.tv_telephone1));
         phone2 = ((TextView) findViewById(R.id.tv_telephone2));
+        gpsView = findViewById(R.id.gps_view);
+        gpsView.setTextColor(Color.RED);
         editTextMontant = findViewById(R.id.tv_montant);
         EdTicketNum = findViewById(R.id.tv_ticket_num);
         paiement = new Paiement(PrefUtils.getInt("user_id"),entity.getId());
@@ -107,6 +114,14 @@ public class PayConfirmActivity extends BaseActivity {
         });
 
 
+
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        super.onLocationChanged(location);
+        gpsView.setText(this.coord);
+        gpsView.setTextColor(Color.GREEN);
 
     }
 

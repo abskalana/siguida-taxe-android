@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.gouandiaka.market.HttpHelper;
 import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.R;
 import com.gouandiaka.market.utils.Utils;
@@ -28,7 +29,6 @@ public class LoginActivity extends Activity {
         LocalDatabase.init(this);
         if(!shoulRequest()){
             Utils.launchAccueilActivity(LoginActivity.this);
-            return;
         }
 
         progressBar = findViewById(R.id.progressBar);
@@ -70,6 +70,10 @@ public class LoginActivity extends Activity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     private boolean shoulRequest(){
         long time =  System.currentTimeMillis() -PrefUtils.getLong("time");

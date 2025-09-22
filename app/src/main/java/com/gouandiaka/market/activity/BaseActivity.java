@@ -17,25 +17,26 @@ import com.gouandiaka.market.utils.Utils;
 
 public class BaseActivity extends Activity  implements LocationListener {
 
-    @SuppressLint("MissingPermission")
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        LocalDatabase.init(this);
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 4, this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
-        this.coord = Utils.convertToString(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
-
-    }
-
     protected String coord;
 
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LocalDatabase.init(this);
+    }
+    @SuppressLint("MissingPermission")
+    @Override
     protected void onResume() {
         super.onResume();
         LocationUtils.setupLocation(this);
+        if(LocationUtils.isLocationGranted(this)){
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 4, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 5, this);
+            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 1000, 5, this);
+            this.coord = Utils.convertToString(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+        }
 
     }
 

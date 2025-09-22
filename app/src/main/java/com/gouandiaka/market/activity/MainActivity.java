@@ -11,7 +11,7 @@ import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.R;
 import com.gouandiaka.market.utils.Utils;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     private View waitingView;
     @Override

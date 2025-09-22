@@ -41,16 +41,16 @@ public class ConfigActivity extends BaseActivity {
             public void onClick(View view) {
                 String ville = spinnerVille.getSelectedItem().toString();
                 String place = spinnerPlace.getSelectedItem().toString();
-                if(ville.startsWith("Selec")){
+                if(Utils.isSelectOrEmpty(ville)){
                     Toast.makeText(ConfigActivity.this,"Selectionner une ville",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(place.startsWith("Selec")){
+                if(Utils.isSelectOrEmpty(place)){
                     Toast.makeText(ConfigActivity.this,"Selectionner place",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String espace = spinnerNature.getSelectedItem().toString();
-                if(espace.startsWith("Selec")){
+                if(Utils.isSelectOrEmpty(espace)){
                     Toast.makeText(ConfigActivity.this, "Selectionner un type", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -79,6 +79,15 @@ public class ConfigActivity extends BaseActivity {
 
            }
        });
+
+        findViewById(R.id.btn_local).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                    Utils.export(ConfigActivity.this);
+
+            }
+        });
 
     }
 

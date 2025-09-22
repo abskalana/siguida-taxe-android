@@ -24,7 +24,7 @@ public class LocationUtils {
 
     }
 
-     static boolean isLocationGranted(Context context) {
+    public static boolean isLocationGranted(Context context) {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -49,5 +49,12 @@ public class LocationUtils {
         }
 
 
+    }
+
+    public static void  requestPermission(Context context){
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+        intent.setData(uri);
+        context.startActivity(intent);
     }
 }

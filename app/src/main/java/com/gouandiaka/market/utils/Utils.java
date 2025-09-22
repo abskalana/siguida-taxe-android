@@ -15,6 +15,9 @@ import com.gouandiaka.market.activity.PayRechercheActivity;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.EntityResponse;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +27,10 @@ public class Utils {
 
 
     public static void launchEnregistrementActivity(Context context) {
+        if(!LocationUtils.isLocationGranted(context)){
+            Toast.makeText(context, "Il faut configurer GPS", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Entity model = PrefUtils.getEntity();
         if(model.isInCorrect()){
             Toast.makeText(context, "Il faut configurer commune", Toast.LENGTH_SHORT).show();
@@ -39,17 +46,32 @@ public class Utils {
         context.startActivity(intent);
     }
 
+
     public static void launchPayConfirmActivity(Context context, Entity entity) {
         Intent intent = new Intent(context, PayConfirmActivity.class);
         intent.putExtra("entity",  new Gson().toJson(entity));
         context.startActivity(intent);
     }
     public static void launchConfigActivity(Context context) {
+        if(!LocationUtils.isLocationGranted(context)){
+            Toast.makeText(context, "Il faut configurer GPS", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(context, ConfigActivity.class);
         context.startActivity(intent);
     }
 
     public static void launchPaiementActivity(Context context) {
+        if(!LocationUtils.isLocationGranted(context)){
+            Toast.makeText(context, "Il faut configurer GPS", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Entity model = PrefUtils.getEntity();
+        if(model.isInCorrect()){
+            Toast.makeText(context, "Il faut configurer commune", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         EntityResponse res =  LocalDatabase.instance().getRemoteModel() ;
         if(res == null || res.getEntities().isEmpty()){
             Toast.makeText(context, "Il faut charger", Toast.LENGTH_SHORT).show();
@@ -124,6 +146,32 @@ public class Utils {
 
 
 
+    }
+
+    public static void export(Context context){
+        String paiement = LocalDatabase.instance().getPaiement();
+        saveToFile(context,"paiement.txt",paiement);
+
+        String response = LocalDatabase.instance().getModel();
+        saveToFile(context,"enregistrement.txt",response);
+    }
+
+    private static void saveToFile(Context context, String fileName, String content) {
+
+        File filex = new File(context.getExternalFilesDir(null), fileName);
+        if (filex.exists()) {
+            filex.delete();
+        }
+
+        try {
+            File file = new File(context.getExternalFilesDir(null), fileName);
+            FileWriter writer = new FileWriter(file);
+            writer.write(content);
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
