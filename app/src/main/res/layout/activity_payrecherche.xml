@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:padding="16dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="16dp"
 
-        android:layout_height="match_parent">
+    android:layout_height="match_parent">
 
-       <TextView
+    <TextView
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,17 +14,17 @@
         android:layout_marginBottom="20sp"
         android:text="Rechercher entity pour payer"
         android:textSize="24sp"
-           android:textStyle="normal|bold"></TextView>
+        android:textStyle="normal|bold"></TextView>
 
-        <EditText
-            android:padding="8dp"
-            android:id="@+id/editTextFilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Rechercher"/>
+    <EditText
+        android:padding="8dp"
+        android:id="@+id/editTextFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Rechercher" />
 
-        <ExpandableListView
-            android:id="@+id/expandableListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+    <ExpandableListView
+        android:id="@+id/expandableListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

@@ -5,6 +5,11 @@
     android:scrollbars="vertical"
     android:padding="16dp">
 
+    <FrameLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
 
         android:layout_width="match_parent"
@@ -18,8 +23,7 @@
             android:gravity="center"
             android:text="Paiement"
             android:textSize="24sp"
-            android:textStyle="normal|bold">
-        </TextView>
+            android:textStyle="normal|bold"></TextView>
 
         <TextView
             android:layout_width="match_parent"
@@ -46,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tv_nomcomplet"
                 android:textSize="18sp"
@@ -104,30 +109,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    <LinearLayout android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content">
-        <TextView
-            android:text="Ticket type"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-        <Spinner
-            android:id="@+id/spinner_ticket_type"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:entries="@array/type_ticket" />
-    </LinearLayout>
-       <LinearLayout android:orientation="horizontal"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Ticket type"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:id="@+id/spinner_ticket_type"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:entries="@array/type_ticket" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:text="Ticket numero"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
+
             <EditText
                 android:id="@+id/tv_ticket_num"
 
@@ -137,7 +149,6 @@
                 android:inputType="number" />
 
         </LinearLayout>
-
 
 
         <TextView
@@ -194,5 +205,15 @@
             android:text="Valider" />
 
     </LinearLayout>
+
+        <com.gouandiaka.market.WaitingView
+            android:id="@+id/waiting_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="56dp"
+            android:visibility="gone" />
+
+
+    </FrameLayout>
 
 </ScrollView>

@@ -15,7 +15,7 @@ import com.gouandiaka.market.LocalDatabase;
 import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.Utils;
 
-public class BaseActivity extends Activity  implements LocationListener {
+public class BaseActivity extends Activity implements LocationListener {
 
     protected String coord;
 
@@ -25,12 +25,13 @@ public class BaseActivity extends Activity  implements LocationListener {
         super.onCreate(savedInstanceState);
         LocalDatabase.init(this);
     }
+
     @SuppressLint("MissingPermission")
     @Override
     protected void onResume() {
         super.onResume();
         LocationUtils.setupLocation(this);
-        if(LocationUtils.isLocationGranted(this)){
+        if (LocationUtils.isLocationGranted(this)) {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 4, this);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 5, this);
@@ -44,12 +45,19 @@ public class BaseActivity extends Activity  implements LocationListener {
     public void onLocationChanged(@NonNull Location location) {
         this.coord = Utils.convertToString(location);
     }
+
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
     @Override
-    public void onProviderEnabled(String provider) {}
+    public void onProviderEnabled(String provider) {
+    }
+
     @Override
-    public void onProviderDisabled(String provider) {}
+    public void onProviderDisabled(String provider) {
+
+    }
 
 
 }

@@ -17,7 +17,7 @@
         android:textColor="@color/md_black_1000"
         android:gravity="center"
         android:visibility="gone"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="16dp" />
 
     <ProgressBar
         android:id="@+id/waiting_progressBar"
@@ -25,13 +25,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="16dp" />
 
     <Button
         android:id="@+id/waiting_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OK"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </LinearLayout>

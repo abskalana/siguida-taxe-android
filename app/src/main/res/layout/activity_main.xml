@@ -74,7 +74,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Commune"
+                    android:text="Config"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:paddingTop="8dp" />
@@ -98,6 +98,7 @@
                     android:contentDescription="Entity" />
 
                 <TextView
+                    android:id="@+id/menu_enregistrer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Enregistrer"
@@ -125,6 +126,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/label_paiement"
                     android:text="Paiement"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -150,6 +152,7 @@
 
                 <TextView
                     android:layout_width="wrap_content"
+                    android:id="@+id/ic_menu_charger_count"
                     android:layout_height="wrap_content"
                     android:text="Charger"
                     android:textSize="14sp"
@@ -184,6 +187,7 @@
         </GridLayout>
 
     </LinearLayout>
+
     <com.gouandiaka.market.WaitingView
         android:id="@+id/waiting_view"
         android:layout_width="match_parent"

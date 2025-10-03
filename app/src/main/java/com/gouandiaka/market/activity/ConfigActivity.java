@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.gouandiaka.market.HttpHelper;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.R;
+import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 
 public class ConfigActivity extends BaseActivity {
@@ -70,27 +71,6 @@ public class ConfigActivity extends BaseActivity {
 
             }
         });
-
-       findViewById(R.id.btnLoca).setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-
-               HttpHelper.syncEntity(ConfigActivity.this,progressBar);
-
-           }
-       });
-
-        findViewById(R.id.btn_local).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                    Utils.export(ConfigActivity.this);
-
-            }
-        });
-
     }
-
-
 
 }

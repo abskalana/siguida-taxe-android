@@ -5,10 +5,10 @@
 
     <string-array name="locations_array">
         <item>Kalana</item>
-      </string-array>
+    </string-array>
 
     <string-array name="place_array">
-        <item >"Selectionner une place"</item>
+        <item>"Selectionner une place"</item>
         <item>Kalana Centre</item>
         <item>Kalana Koko</item>
         <item>Kalana Kelibougou</item>
@@ -16,7 +16,7 @@
         <item>Kalana Camp</item>
         <item>Kalana Dabaranbougou</item>
         <item>Kalana</item>
-   </string-array>
+    </string-array>
     <string-array name="status_array">
         <item>Selectionner un état</item>
         <item>PAYÉ</item>
@@ -28,7 +28,7 @@
     </string-array>
 
     <string-array name="categories_array">
-        <item >"Selectionner une categorie"</item>
+        <item>"Selectionner une categorie"</item>
         <item>Boutique divers</item>
         <item>Boutique spécialisée</item>
         <item>Autres commerces</item>
@@ -79,7 +79,6 @@
     </string-array>
 
 
-
     <string-array name="type_entity">
         <item>MAISON</item>
         <item>HANGAR</item>
@@ -94,7 +93,7 @@
     </string-array>
 
     <string-array name="type_ticket">
-        <item >"Select un type"</item>
+        <item>"Select un type"</item>
         <item>TK100</item>
         <item>TK500</item>
         <item>TK1000</item>

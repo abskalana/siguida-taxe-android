@@ -1,6 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-<!-- Base application theme (AppCompat standard). -->
+<resources>
+    <!-- Base application theme (AppCompat standard). -->
     <style name="Theme.GouandiakaApp" parent="@android:style/Theme.Holo.Light.NoActionBar">
-        
+
     </style>>
 </resources>

@@ -28,7 +28,7 @@ public class LoginActivity extends Activity {
         PrefUtils.init(this);
         LocalDatabase.init(this);
         if(!shoulRequest()){
-            Utils.launchAccueilActivity(LoginActivity.this);
+            Utils.launchAccueilActivity(LoginActivity.this,false);
         }
 
         progressBar = findViewById(R.id.progressBar);
@@ -55,7 +55,7 @@ public class LoginActivity extends Activity {
                             PrefUtils.save("user",userName.trim());
                             PrefUtils.setInt("user_id",response);
                             PrefUtils.save("time",System.currentTimeMillis());
-                            Utils.launchAccueilActivity(LoginActivity.this);
+                            Utils.launchAccueilActivity(LoginActivity.this,true);
 
                         });
                     } else {

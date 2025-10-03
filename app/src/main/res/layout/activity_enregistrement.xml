@@ -5,7 +5,10 @@
     android:scrollbars="vertical"
     android:padding="16dp">
 
-
+    <FrameLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,7 +54,6 @@
             android:inputType="textPersonName" />
 
 
-
         <EditText
             android:layout_margin="5dp"
             android:id="@+id/ettelephone"
@@ -92,7 +94,6 @@
             android:entries="@array/type_entity" />
 
 
-
         <Button
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -104,6 +105,16 @@
             android:text="Valider" />
 
     </LinearLayout>
+
+        <com.gouandiaka.market.WaitingView
+            android:id="@+id/waiting_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="56dp"
+            android:visibility="gone" />
+
+
+    </FrameLayout>
 
 
 </ScrollView>

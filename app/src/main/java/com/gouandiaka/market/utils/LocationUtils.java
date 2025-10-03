@@ -2,9 +2,9 @@ package com.gouandiaka.market.utils;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
 import android.widget.Toast;
@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat;
 
 public class LocationUtils {
 
-    public static void setupLocation(Context context){
+    public static void setupLocation(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
@@ -25,36 +25,29 @@ public class LocationUtils {
     }
 
     public static boolean isLocationGranted(Context context) {
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        boolean location = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
+        return location;
     }
 
-    public static  void  setupPermission(Context context){
-        if(isLocationGranted(context)){
+    public static void setupPermission(Context context) {
+        if (isLocationGranted(context)) {
             LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if(!isGpsEnabled){
+            if (!isGpsEnabled) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 context.startActivity(intent);
-            }else{
+            } else {
                 Toast.makeText(context, "SUCCESS", Toast.LENGTH_SHORT).show();
             }
-        }else{
+        } else {
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             Uri uri = Uri.fromParts("package", context.getPackageName(), null);
             intent.setData(uri);
             context.startActivity(intent);
         }
 
-
-    }
-
-    public static void  requestPermission(Context context){
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", context.getPackageName(), null);
-        intent.setData(uri);
-        context.startActivity(intent);
     }
 }

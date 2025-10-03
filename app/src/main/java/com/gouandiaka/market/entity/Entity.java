@@ -10,23 +10,12 @@ import java.util.Objects;
 public class Entity {
 
     private String id;
-    private final String  commune;
+    private final String commune;
 
     public String getId() {
         return id;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Entity entity = (Entity) o;
-        return Objects.equals(id, entity.id) && Objects.equals(commune, entity.commune) && Objects.equals(city, entity.city);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, commune, city);
-    }
 
     private final String city;
 
@@ -39,9 +28,8 @@ public class Entity {
     }
 
     private final String locality;
-    private  String activity;
+    private String activity;
     private String property = "PRIVEE";
-
 
 
     @SerializedName("contact_nom")
@@ -72,37 +60,51 @@ public class Entity {
         this.property = property;
     }
 
-    public void setActivity(String activity) { this.activity = activity; }
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
 
-    public void setTypeProperty(String typeEntity) { this.typeEntity = typeEntity; }
-
-
-    public void setContactName(String contactName) { this.contactNom = contactName; }
-
-
-    public void setContactPrenom(String contactPrenom) { this.contactPrenom = contactPrenom; }
+    public void setTypeProperty(String typeEntity) {
+        this.typeEntity = typeEntity;
+    }
 
 
-    public void setContactPhone(String contactPhone) { this.contactPhone = contactPhone; }
+    public void setContactName(String contactName) {
+        this.contactNom = contactName;
+    }
 
 
-    public void setPorte(int porte) { this.porte = porte; }
+    public void setContactPrenom(String contactPrenom) {
+        this.contactPrenom = contactPrenom;
+    }
 
 
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
 
-    public void setCoord(String coord) { this.coord = coord; }
+
+    public void setPorte(int porte) {
+        this.porte = porte;
+    }
 
 
+    public void setCoord(String coord) {
+        this.coord = coord;
+    }
 
-    public void setStatus(String status) { this.status = status; }
 
-    public boolean isInCorrect(){
-        return Utils.isEmpty(commune) || Utils.isEmpty(city) || Utils.isEmpty(property) ||user <0;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public boolean isInCorrect() {
+        return Utils.isEmpty(commune) || Utils.isEmpty(city) || Utils.isEmpty(property) || user < 0;
     }
 
     @NonNull
-    public String toString(){
-        return this.contactNom.trim() + ","+this.contactPrenom.trim()+","+this.contactPhone.trim();
+    public String toString() {
+        return this.contactNom.trim() + "," + this.contactPrenom.trim() + "," + this.contactPhone.trim();
     }
 
     public String getCommune() {
@@ -150,23 +152,59 @@ public class Entity {
     }
 
     public String getNomComplet() {
-        return this.contactPrenom + " "+ this.contactNom.toUpperCase();
+        return this.contactPrenom + " " + this.contactNom.toUpperCase();
     }
 
-    public String getTelephone1(){
-        if(Utils.isEmpty(this.contactPhone)) return null;
-        if(this.contactPhone.split(",").length > 0)return this.contactPhone.split(",")[0];
-        return  null;
+    public String getTelephone1() {
+        if (Utils.isEmpty(this.contactPhone)) return null;
+        if (this.contactPhone.split(",").length > 0) return this.contactPhone.split(",")[0];
+        return null;
     }
-    public String getTelephone2(){
-        if(Utils.isEmpty(this.contactPhone)) return null;
-        if(this.contactPhone.split(",").length > 1)return this.contactPhone.split(",")[1];
-        return  null;
+
+    public String getTelephone2() {
+        if (Utils.isEmpty(this.contactPhone)) return null;
+        if (this.contactPhone.split(",").length > 1) return this.contactPhone.split(",")[1];
+        return null;
     }
 
     public String getInfo() {
-        return "#Porte : " + this.porte + " -  "+ this.property.toUpperCase()+ "  -  "+ this.activity;
+        return "#Porte : " + this.porte + " -  " + this.property.toUpperCase() + "  -  " + this.activity;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Entity entity = (Entity) o;
+        return Objects.equals(id, entity.id) && Objects.equals(commune, entity.commune) && Objects.equals(city, entity.city);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, commune, city);
+    }
+
+    public String toCsvRow() {
+        return String.join(",",
+                city,
+                locality,
+                safe(activity),
+                property,
+                safe(contactNom),
+                safe(contactPrenom),
+                safe(contactPhone),
+                typeEntity,
+                String.valueOf(porte),
+                safe(coord),
+                status,
+                String.valueOf(user)
+        );
+    }
+
+    // Prevent null issues
+    private String safe(String value) {
+        return value == null ? "" : value;
+    }
+
 }
 
 

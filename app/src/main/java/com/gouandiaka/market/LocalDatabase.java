@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.entity.Entity;
@@ -46,6 +45,9 @@ public class LocalDatabase extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS table_model (data TEXT, time INTEGER );");
         db.execSQL("CREATE TABLE IF NOT EXISTS table_remote_model (data TEXT, time INTEGER );");
         db.execSQL("CREATE TABLE IF NOT EXISTS table_paiement_model (data TEXT, time INTEGER );");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS table_model_backup (data TEXT, time INTEGER );");
+        db.execSQL("CREATE TABLE IF NOT EXISTS table_paiement_model_backup (data TEXT, time INTEGER );");
     }
 
     @Override
@@ -59,16 +61,14 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
 
     public void addEntity(Entity model) {
-        db.delete("table_model", null, null);
         ContentValues values = new ContentValues();
         values.put("time", System.currentTimeMillis());
         values.put("data", new Gson().toJson(model));
         db.insertWithOnConflict("table_model", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        db.insertWithOnConflict("table_model_backup", null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-
-
-    public String getModel() {
+    public List<Entity> getModel() {
         Cursor cursor = db.query("table_model", null, null, null, null, null, null, null);
         List<Entity> response = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -76,10 +76,41 @@ public class LocalDatabase extends SQLiteOpenHelper {
             Entity model = new Gson().fromJson(data, Entity.class);
             response.add(model);
         }
-        if (response.isEmpty()) return null;
+        return response;
+    }
+
+    public int getLocaleModelCount() {
+        Cursor cursor = db.query("table_model", null, null, null, null, null, null, null);
+        int result = 0;
+        while (cursor.moveToNext()) {
+            result = result + 1;
+        }
+        return result;
+    }
+
+    public int getRemoteModelCount() {
+        Cursor cursor = db.query("table_remote_model", null, null, null, null, null, null, null);
+
+        List<Entity> response = new ArrayList<>();
+        if (cursor.moveToNext()) {
+            String data = cursor.getString(0);
+            Type listType = new TypeToken<List<Entity>>() {
+            }.getType();
+            response = new Gson().fromJson(data, listType);
+        }
+
         cursor.close();
-        Gson gson = new Gson();
-        return gson.toJson(response);
+
+        return response.size();
+    }
+
+    public int getLocalPaiementCount() {
+        Cursor cursor = db.query("table_paiement_model", null, null, null, null, null, null, null);
+        int result = 0;
+        while (cursor.moveToNext()) {
+            result = result + 1;
+        }
+        return result;
     }
 
     public EntityResponse getRemoteModel() {
@@ -105,15 +136,17 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
 
     public void savePaiement(Paiement paiement) {
-        db.delete("table_paiement_model", null, null);
         ContentValues values = new ContentValues();
         values.put("time", System.currentTimeMillis());
         values.put("data", new Gson().toJson(paiement));
         db.insertWithOnConflict("table_paiement_model", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        db.insertWithOnConflict("table_paiement_model_backup", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
     }
 
-    public String getPaiement() {
+
+
+    public List<Paiement> getPaiement() {
         Cursor cursor = db.query("table_paiement_model", null, null, null, null, null, null, null);
         List<Paiement> response = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -121,16 +154,14 @@ public class LocalDatabase extends SQLiteOpenHelper {
             Paiement model = new Gson().fromJson(data, Paiement.class);
             response.add(model);
         }
-        if(response.isEmpty()) return null;
-        cursor.close();
-        Gson gson = new Gson();
-        return gson.toJson(response);
+        return response;
     }
 
     public void clearPaiement() {
         db.delete("table_paiement_model", null, null);
 
     }
+
     public synchronized void clearLocaleTraffic() {
         db.delete("table_model", null, null);
     }

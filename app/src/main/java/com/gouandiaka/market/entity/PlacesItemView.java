@@ -14,8 +14,6 @@ public class PlacesItemView extends LinearLayout {
     private final TextView name;
 
 
-
-
     public PlacesItemView(Context context, String itemName, String itemType, String itemLocality) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.layout_item_place, this, true);
@@ -25,7 +23,7 @@ public class PlacesItemView extends LinearLayout {
     }
 
     public void reuse(final String itemName, String itemType, String itemLocality) {
-        name.setText(itemName.toUpperCase() + " " + itemType + " Tel:"+itemLocality);
+        name.setText(itemName.toUpperCase() + " " + itemType + " Tel:" + itemLocality);
 
     }
 }

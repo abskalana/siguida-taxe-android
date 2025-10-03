@@ -29,11 +29,11 @@ public class PrefUtils {
         return preferences.getString(key, null);
     }
 
-    public static String getString(String key,String fallback) {
+    public static String getString(String key, String fallback) {
         return preferences.getString(key, fallback);
     }
 
-    public static void setInt(String key, int num ) {
+    public static void setInt(String key, int num) {
         preferences.edit().putInt(key, num).apply();
     }
 
@@ -46,11 +46,10 @@ public class PrefUtils {
     }
 
 
-
-    public static Entity getEntity(){
+    public static Entity getEntity() {
 
         Entity model = new Entity(getString("commune"), PrefUtils.getString("ville"),
-                PrefUtils.getString("place"),PrefUtils.getString("espace"),PrefUtils.getInt("user_id"));
+                PrefUtils.getString("place"), PrefUtils.getString("espace"), PrefUtils.getInt("user_id"));
 
         return model;
     }

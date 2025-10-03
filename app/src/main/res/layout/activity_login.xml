@@ -4,53 +4,55 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="30dp">
-            <TextView
 
-            android:layout_width="match_parent"
-            android:layout_height="60sp"
-            android:gravity="center"
-            android:layout_marginBottom="20sp"
-            android:text="Connexion"
-            android:textSize="24sp"
-            android:textStyle="normal|bold">
+    <TextView
 
-        </TextView>
-        <EditText
-            android:id="@+id/etidentifiant"
-            android:layout_width="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:gravity="center"
+        android:layout_marginBottom="20sp"
+        android:text="Connexion"
+        android:textSize="24sp"
+        android:textStyle="normal|bold">
+
+    </TextView>
+
+    <EditText
+        android:id="@+id/etidentifiant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Login"
+        android:layout_margin="20sp"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etPasswor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20sp"
+        android:hint="Mot de passe"
+        android:inputType="text" />
+
+    <Button
+        android:layout_marginTop="20sp"
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Login"
-            android:layout_margin="20sp"
-            android:inputType="text" />
-
-        <EditText
-            android:id="@+id/etPasswor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20sp"
-            android:hint="Mot de passe"
-            android:inputType="text" />
-
-        <Button
-            android:layout_marginTop="20sp"
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Valider" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_margin="20dp"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content">
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-        </LinearLayout>
-
-
-
+            android:visibility="gone" />
     </LinearLayout>
+
+
+</LinearLayout>

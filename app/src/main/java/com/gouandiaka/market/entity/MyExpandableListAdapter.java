@@ -1,11 +1,8 @@
 package com.gouandiaka.market.entity;
 
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,14 +15,14 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> listGroup;
     private HashMap<String, List<Entity>> listItem;
 
-    public MyExpandableListAdapter(List<Entity> entities,String locality) {
+    public MyExpandableListAdapter(List<Entity> entities, String locality) {
         this.listItem = new HashMap<>();
         this.listGroup = new ArrayList<>();
         for (Entity e : entities) {
-            if(locality == null || (!locality.equalsIgnoreCase(e.getLocality()) && !locality.equalsIgnoreCase(e.getCity()))){
+            if (locality == null || (!locality.equalsIgnoreCase(e.getLocality()) && !locality.equalsIgnoreCase(e.getCity()))) {
                 continue;
             }
-            String groupName = e.getActivity();
+            String groupName = e.getLocality();
             if (!listGroup.contains(groupName)) {
                 listGroup.add(groupName);
                 listItem.put(groupName, new ArrayList<>());
@@ -73,7 +70,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String groupTitle = (String) getGroup(groupPosition);
-        if (convertView instanceof  GroupingItemView) {
+        if (convertView instanceof GroupingItemView) {
             GroupingItemView placeItemView = (GroupingItemView) convertView;
             placeItemView.reuse(groupTitle);
             return placeItemView;

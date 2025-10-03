@@ -12,12 +12,12 @@ import android.widget.ExpandableListView;
 import androidx.annotation.NonNull;
 
 import com.gouandiaka.market.LocalDatabase;
-import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.R;
-import com.gouandiaka.market.utils.Utils;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.EntityResponse;
 import com.gouandiaka.market.entity.MyExpandableListAdapter;
+import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import java.util.List;
 public class PayRechercheActivity extends BaseActivity implements LocationListener {
 
     private EditText editTextFilter;
-    private  String locality;
+    private String locality;
     private ExpandableListView expandableListView;
 
     private EntityResponse entityResponse;
@@ -46,14 +46,14 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
         listGroup = new ArrayList<>();
         listItem = new HashMap<>();
         String locality = PrefUtils.getString("place");
-        adapter = new MyExpandableListAdapter( allEntities,locality);
+        adapter = new MyExpandableListAdapter(allEntities, locality);
         expandableListView.setAdapter(adapter);
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 Entity localePlace = (Entity) adapter.getChild(groupPosition, childPosition);
-                Utils.launchPayConfirmActivity(PayRechercheActivity.this,localePlace);
+                Utils.launchPayConfirmActivity(PayRechercheActivity.this, localePlace);
                 return false;
             }
         });
@@ -71,7 +71,7 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
             @Override
             public void afterTextChanged(Editable s) {
                 String filter = s.toString().toLowerCase();
-                if(Utils.isEmpty(filter)) return;
+                if (Utils.isEmpty(filter)) return;
                 List<Entity> filtered = new ArrayList<>();
                 for (Entity e : allEntities) {
                     if (e.getContactNom().toLowerCase().contains(filter) ||
@@ -80,7 +80,7 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
                         filtered.add(e);
                     }
                 }
-                adapter = new MyExpandableListAdapter( filtered,locality);
+                adapter = new MyExpandableListAdapter(filtered, locality);
                 expandableListView.setAdapter(adapter);
             }
         });
@@ -90,8 +90,8 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
 
     @Override
     public void onLocationChanged(@NonNull Location locations) {
-        String place = PrefUtils.getString("place",null);
-        if(Utils.isEmpty(place) ) return;
+        String place = PrefUtils.getString("place", null);
+        if (Utils.isEmpty(place)) return;
 
     }
 }

@@ -1,23 +1,34 @@
 package com.gouandiaka.market.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gouandiaka.market.HttpHelper;
-import com.gouandiaka.market.utils.LocationUtils;
+import com.gouandiaka.market.LocalDatabase;
 import com.gouandiaka.market.R;
+import com.gouandiaka.market.WaitingView;
+import com.gouandiaka.market.entity.Entity;
+import com.gouandiaka.market.entity.Paiement;
+import com.gouandiaka.market.utils.LocationUtils;
+import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 
-public class MainActivity extends BaseActivity {
+import java.util.List;
 
-    private View waitingView;
+public class MainActivity extends BaseActivity implements RequestListener  {
+
+    private WaitingView waitingView;
+    private TextView charger;
+    private TextView paiement;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        charger = findViewById(R.id.ic_menu_charger_count);
+        paiement = findViewById(R.id.label_paiement);
         waitingView = findViewById(R.id.waiting_view);
         findViewById(R.id.menu_gps).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -29,7 +40,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.menu_entity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               Utils.launchEnregistrementActivity(MainActivity.this);
+                Utils.launchEnregistrementActivity(MainActivity.this);
             }
         });
         findViewById(R.id.menu_commune).setOnClickListener(new View.OnClickListener() {
@@ -48,35 +59,43 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.ic_menu_charger).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HttpHelper.syncEntity(MainActivity.this,waitingView);
+                HttpHelper.loadEntity(MainActivity.this, waitingView, null);
             }
         });
 
         findViewById(R.id.ic_menu_envoyer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 setupNetwork(MainActivity.this,waitingView);
+                HttpHelper.sendAll(MainActivity.this,MainActivity.this);
             }
         });
+        boolean showConfig = getIntent().getBooleanExtra("SHOW_CONFIG", false);
+       if (showConfig) {
+           Utils.launchConfigActivity(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TextView textView = findViewById(R.id.menu_enregistrer);
+        int c = LocalDatabase.instance().getLocaleModelCount();
+        textView.setText("Enregistrer (" + c + " )");
+        c = LocalDatabase.instance().getRemoteModelCount();
+        charger.setText("Charger (" + c + " )");
+        c = LocalDatabase.instance().getLocalPaiementCount();
+        paiement.setText("Paiement (" + c + " )");
+
+
 
     }
 
-    private  void  setupNetwork(Context context, View waitingView) {
-        waitingView.setVisibility(View.VISIBLE);
-        new Thread(() -> {
-            String response = HttpHelper.makeRequest();
-            if (response == null) {
-                runOnUiThread(() -> {
-                    waitingView.setVisibility(View.GONE);
-                    Toast.makeText(context, "ECHEC ", Toast.LENGTH_SHORT).show();
-                });
-            } else {
-                runOnUiThread(() -> {
-                    waitingView.setVisibility(View.GONE);
-                    Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
-                });
-            }
-        }).start();
+    @Override
+    public void onSuccess(boolean b) {
+        waitingView.stop(b);
+        if(b){
+            Toast.makeText(this,"Success", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
