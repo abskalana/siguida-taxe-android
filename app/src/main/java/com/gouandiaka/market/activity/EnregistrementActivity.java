@@ -45,6 +45,7 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
             Utils.launchConfigActivity(this);
             return;
         }
+
         gpsView = findViewById(R.id.gps_view);
         gpsView.setTextColor(Color.RED);
         waitingView = findViewById(R.id.waiting_view);
@@ -112,6 +113,7 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
         waitingView.stop(b);
         if(b){
             Toast.makeText(this,"Envoyé avec success", Toast.LENGTH_SHORT).show();
+            finish();
         }else{
             if(model!=null)LocalDatabase.instance().addEntity(model);
         }

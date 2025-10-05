@@ -26,9 +26,9 @@ import com.gouandiaka.market.utils.Utils;
 
 public class PayConfirmActivity extends BaseActivity implements RequestListener {
 
-    private Entity entity;
+    Entity entity;
 
-    private EditText EdTicketNum, editTextMontant, editTextCmt;
+    private EditText editTextMontant, editTextCmt;
 
     private Paiement paiement;
     private TextView phone1, phone2;
@@ -50,7 +50,6 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
         gpsView = findViewById(R.id.gps_view);
         gpsView.setTextColor(Color.RED);
         editTextMontant = findViewById(R.id.tv_montant);
-        EdTicketNum = findViewById(R.id.tv_ticket_num);
         waitingView = findViewById(R.id.waiting_view);
         paiement = new Paiement(PrefUtils.getInt("user_id"), entity.getId());
         ((TextView) findViewById(R.id.tv_nomcomplet)).setText(entity.getNomComplet());
@@ -91,19 +90,20 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                     Toast.makeText(view.getContext(), "Selectionner un type ticket ", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String ticketNum = EdTicketNum.getEditableText().toString();
-                int num = Utils.convertToNumber(ticketNum, -1);
-                if (num < 0) {
-                    Toast.makeText(view.getContext(), "Ticket num incorrect", Toast.LENGTH_SHORT).show();
+
+                String ticketMois = ((Spinner) findViewById(R.id.spinner_ticket_mois)).getSelectedItem().toString();
+                if (Utils.isSelectOrEmpty(ticketMois)) {
+                    Toast.makeText(view.getContext(), "Selectionner le mois ", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                paiement.setTicketNum(ticketNum);
+
                 String montant = editTextMontant.getEditableText().toString();
                 int value = Utils.convertToNumber(montant, -1);
-                if (num < 100) {
+                if (value < 100) {
                     Toast.makeText(view.getContext(), "montant incorrect", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                paiement.setMois(ticketMois);
                 paiement.setValue(value);
                 paiement.setStatus(status);
                 paiement.setCoord(coord);
@@ -118,7 +118,6 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
 
             }
         });
-
 
     }
 

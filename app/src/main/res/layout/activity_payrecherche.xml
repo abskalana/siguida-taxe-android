@@ -2,19 +2,60 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:padding="16dp"
 
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/catalogui_blue_manoeuvre"
+        android:id="@+id/title_paiement"
         android:gravity="center"
-        android:layout_marginBottom="20sp"
+        android:layout_marginBottom="10sp"
+        android:padding="10dp"
         android:text="Rechercher entity pour payer"
         android:textSize="24sp"
-        android:textStyle="normal|bold"></TextView>
+        android:textStyle="normal|bold">
+
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/btnParStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Par Status"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#4CAF50" /> <!-- Vert -->
+
+        <Button
+            android:id="@+id/btnParActivite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Par Activité"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2196F3" /> <!-- Bleu -->
+
+        <Button
+            android:id="@+id/btnParNom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Par nom"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF9800" /> <!-- Orange -->
+
+    </LinearLayout>
+
 
     <EditText
         android:padding="8dp"
@@ -24,6 +65,7 @@
         android:hint="Rechercher" />
 
     <ExpandableListView
+        android:padding="8dp"
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

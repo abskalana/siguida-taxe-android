@@ -4,18 +4,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.gouandiaka.market.HttpHelper;
 import com.gouandiaka.market.LocalDatabase;
 import com.gouandiaka.market.R;
 import com.gouandiaka.market.WaitingView;
-import com.gouandiaka.market.entity.Entity;
-import com.gouandiaka.market.entity.Paiement;
 import com.gouandiaka.market.utils.LocationUtils;
+import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 
-import java.util.List;
+import java.util.Calendar;
 
 public class MainActivity extends BaseActivity implements RequestListener  {
 
@@ -30,6 +28,7 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         charger = findViewById(R.id.ic_menu_charger_count);
         paiement = findViewById(R.id.label_paiement);
         waitingView = findViewById(R.id.waiting_view);
+        int defaultYear = Calendar.getInstance().get(Calendar.YEAR);
         findViewById(R.id.menu_gps).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,6 +39,10 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         findViewById(R.id.menu_entity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(Utils.shoulRequestConfig()){
+                    Utils.launchConfigActivity(MainActivity.this);
+                    return;
+                }
                 Utils.launchEnregistrementActivity(MainActivity.this);
             }
         });
@@ -52,6 +55,10 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         findViewById(R.id.menu_paiement).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(Utils.shoulRequestConfig()){
+                    Utils.launchConfigActivity(MainActivity.this);
+                    return;
+                }
                 Utils.launchPaiementActivity(MainActivity.this);
             }
         });
@@ -59,13 +66,34 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         findViewById(R.id.ic_menu_charger).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HttpHelper.loadEntity(MainActivity.this, waitingView, null);
+                if(Utils.shoulRequestConfig()){
+                    Utils.launchConfigActivity(MainActivity.this);
+                    return;
+                }
+
+                String annee = PrefUtils.getString("annee", String.valueOf(defaultYear));
+                String mois = PrefUtils.getString("mois");
+                if(Utils.isEmpty(annee) || Utils.isSelectOrEmpty(mois)) {
+                    Toast.makeText(MainActivity.this,"Specifier l'année et le mois Config",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String property = PrefUtils.getString("espace", "PRIVEE");
+                String locality = PrefUtils.getString("place");
+                if(Utils.isSelectOrEmpty(property) || Utils.isSelectOrEmpty(locality)) {
+                    Toast.makeText(MainActivity.this,"Specifier le type propriete et le quartier Config",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                waitingView.start();
+                HttpHelper.loadEntity(annee, mois,property, locality,MainActivity.this);
             }
         });
 
         findViewById(R.id.ic_menu_envoyer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                waitingView.start();
                 HttpHelper.sendAll(MainActivity.this,MainActivity.this);
             }
         });

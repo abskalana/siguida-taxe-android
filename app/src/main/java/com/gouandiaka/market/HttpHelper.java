@@ -11,8 +11,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.entity.Entity;
+import com.gouandiaka.market.entity.EntityResponse;
 import com.gouandiaka.market.entity.Paiement;
-import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 
@@ -29,12 +29,32 @@ import java.util.List;
 public class HttpHelper {
 
 
+    public static final String TYPE_ENTITY = "entity";
+    public static final String TYPE_PAYMENT = "paiement";
     public static final String REQUEST_POST = "https://siguidataxe.com/api/entity/create/";
     public static final String REQUEST_PAIEMENT = "https://siguidataxe.com/api/paiement/create/";
     public static String LOGIN_URL = "https://siguidataxe.com/api/mobileauth/";
     public static String BACKUP_URL = "https://siguidataxe.com/api/backup/";
 
-    public static boolean postEntity(String urlString, String jsonBody) {
+    public static boolean postEntity(String urlString, String jsonBody,String type) {
+        String content = postContent(urlString,jsonBody);
+        if(Utils.isEmpty(content)) return false;
+        if(TYPE_ENTITY.equalsIgnoreCase(type)){
+            List<Entity> entities = Entity.parseList(content);
+            if(entities == null || entities.isEmpty()) return false;
+            EntityResponse entityResponse = LocalDatabase.instance().getRemoteModel();
+            entities.addAll(entityResponse.getEntities());
+            LocalDatabase.instance().addRemoveEntity(entities);
+            return true;
+        }
+        if(TYPE_PAYMENT.equalsIgnoreCase(type)){
+            List<Paiement> paiements = Paiement.parseList(content);
+            if(paiements == null || paiements.isEmpty()) return false;
+            return true;
+        }
+        return false;
+    }
+    public static String postContent(String urlString, String jsonBody) {
         HttpURLConnection connection = null;
         try {
             URL url = new URL(urlString);
@@ -58,12 +78,13 @@ public class HttpHelper {
                 response.append(line.trim());
             }
             in.close();
-            String clean = response.toString().replace("\"", "");
-            return "true".equalsIgnoreCase(response.toString()) || "true".equalsIgnoreCase(clean);
+
+            return response.toString();
+
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         } finally {
             if (connection != null) connection.disconnect();
         }
@@ -104,11 +125,20 @@ public class HttpHelper {
     }
 
     // --- GET pour récupérer la liste des entités ---
-    public static List<Entity> getEntities(String urlString) {
+    public static List<Entity> getEntities(String urlString, String annee, String mois, String property, String locality) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
         try {
-            URL url = new URL(urlString);
+
+            String query = String.format("annee=%s&mois=%s&prop=%s&loc=%s",
+                    URLEncoder.encode(annee, "UTF-8"),
+                    URLEncoder.encode(mois, "UTF-8"),
+                    URLEncoder.encode(property, "UTF-8"),
+                    URLEncoder.encode(locality, "UTF-8")
+            );
+
+            URL url = new URL(urlString + "?" + query);
+
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
@@ -151,7 +181,7 @@ public class HttpHelper {
         new Thread(() -> {
             Gson gson = new Gson();
             String content = gson.toJson(entities);
-            boolean b = HttpHelper.postEntity(HttpHelper.REQUEST_POST, content);
+            boolean b = HttpHelper.postEntity(HttpHelper.REQUEST_POST, content,TYPE_ENTITY);
             new Handler(Looper.getMainLooper()).post(() -> {
                 requestListener.onSuccess(b);
             });
@@ -166,7 +196,7 @@ public class HttpHelper {
         new Thread(() -> {
             Gson gson = new Gson();
             String content = gson.toJson(entities);
-            boolean b = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT, content);
+            boolean b = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT,content, TYPE_PAYMENT);
             new Handler(Looper.getMainLooper()).post(() -> {
                 requestListener.onSuccess(b);
             });
@@ -186,13 +216,13 @@ public class HttpHelper {
             boolean status = false;
             if(!entities.isEmpty()){
                 String content = gson.toJson(entities);
-                status= HttpHelper.postEntity(HttpHelper.REQUEST_POST, content);
+                status= HttpHelper.postEntity(HttpHelper.REQUEST_POST, content,TYPE_ENTITY);
                 if(status) LocalDatabase.instance().clearLocaleTraffic();
             }
 
             if(!paiements.isEmpty()){
                 String content = gson.toJson(paiements);
-                status = status && HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT, content);
+                status = status && HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT, content, TYPE_PAYMENT);
                 if(status) LocalDatabase.instance().clearPaiement();
             }
 
@@ -203,29 +233,15 @@ public class HttpHelper {
         }).start();
     }
 
-    public static void loadEntity(Activity context, View view, TextView countView) {
-        view.setVisibility(View.VISIBLE);
+    public static void loadEntity(String annee, String mois,String property, String locality,RequestListener requestListener) {
         new Thread(() -> {
+            List<Entity> response = HttpHelper.getEntities(HttpHelper.REQUEST_POST,annee,mois,property,locality);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                requestListener.onSuccess(response != null && !response.isEmpty());
+            });
 
-            List<Entity> response = HttpHelper.getEntities(HttpHelper.REQUEST_POST);
-
-            if (response == null || response.isEmpty()) {
-                context.runOnUiThread(() -> {
-                    view.setVisibility(View.GONE);
-                    Toast.makeText(context, "Erreur ", Toast.LENGTH_SHORT).show();
-                });
-            } else {
-                context.runOnUiThread(() -> {
-                    view.setVisibility(View.GONE);
-                    LocalDatabase.instance().addRemoveEntity(response);
-                    Toast.makeText(context, "SUCCESS", Toast.LENGTH_SHORT).show();
-                });
-            }
         }).start();
     }
 
-    public static void postBackup(Activity context, View view) {
-
-    }
 
 }

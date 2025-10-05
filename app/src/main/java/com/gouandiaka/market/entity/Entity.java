@@ -2,9 +2,14 @@ package com.gouandiaka.market.entity;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.utils.Utils;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Entity {
@@ -31,7 +36,6 @@ public class Entity {
     private String activity;
     private String property = "PRIVEE";
 
-
     @SerializedName("contact_nom")
     private String contactNom;
     @SerializedName("contact_prenom")
@@ -47,6 +51,9 @@ public class Entity {
     private String coord;
 
     private String status = "OUVERT";
+    @SerializedName("status_paiement")
+    private String paiementStatus;
+
 
 
     private int user;
@@ -167,6 +174,14 @@ public class Entity {
         return null;
     }
 
+    public String getPaiementStatus() {
+        return paiementStatus;
+    }
+
+    public void setPaiementStatus(String paiementStatus) {
+        this.paiementStatus = paiementStatus;
+    }
+
     public String getInfo() {
         return "#Porte : " + this.porte + " -  " + this.property.toUpperCase() + "  -  " + this.activity;
     }
@@ -205,6 +220,18 @@ public class Entity {
         return value == null ? "" : value;
     }
 
+    public static List<Entity> parseList(String response){
+        try{
+            List<Entity> entities = new ArrayList<>();
+            Type listType = new TypeToken<List<Entity>>() {
+            }.getType();
+            entities = new Gson().fromJson(response, listType);
+            if(entities == null || entities.isEmpty()) return null;
+            return entities;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
 
 

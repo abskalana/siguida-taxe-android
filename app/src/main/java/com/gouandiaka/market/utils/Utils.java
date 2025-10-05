@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.R;
 import com.gouandiaka.market.activity.ConfigActivity;
 import com.gouandiaka.market.activity.EnregistrementActivity;
 import com.gouandiaka.market.activity.MainActivity;
@@ -74,7 +75,12 @@ public class Utils {
         }
         Entity model = PrefUtils.getEntity();
         if (model.isInCorrect()) {
-            Toast.makeText(context, "Il faut configurer commune", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Il faut configurer Config", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (Utils.isEmpty(PrefUtils.getString("annee")) || Utils.isEmpty(PrefUtils.getString("mois"))) {
+            Toast.makeText(context, "Il faut année et mois Config", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -181,6 +187,10 @@ public class Utils {
         }
     }
 
+    public static boolean shoulRequestConfig(){
+        long time =  System.currentTimeMillis() -PrefUtils.getLong("time");
+        return time > 1000*60*60*23;
+    }
 
     private static void saveToFile(Context context, String fileName, String content) {
 
@@ -198,6 +208,8 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
 }

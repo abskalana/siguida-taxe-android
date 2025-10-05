@@ -1,15 +1,21 @@
 package com.gouandiaka.market.entity;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.utils.Utils;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Paiement {
 
     @SerializedName("value")
     private int value;
 
-    @SerializedName("ticket_num")
-    private String ticketNum;
+    @SerializedName("mois")
+    private String mois;
 
     @SerializedName("ticket_type")
     private String ticketType;
@@ -42,12 +48,12 @@ public class Paiement {
         this.value = value;
     }
 
-    public String getTicketNum() {
-        return ticketNum;
+    public String getMois() {
+        return mois;
     }
 
-    public void setTicketNum(String ticketNum) {
-        this.ticketNum = ticketNum;
+    public void setMois(String mois) {
+        this.mois = mois;
     }
 
     public String getTicketType() {
@@ -109,7 +115,7 @@ public class Paiement {
     public String toCsvRow() {
         return String.join(",",
                 String.valueOf(value),
-                safe(ticketNum),
+                safe(mois),
                 safe(ticketType),
                 safe(status),
                 safe(entityModel),
@@ -124,5 +130,18 @@ public class Paiement {
         return value == null ? "" : value;
     }
 
+
+    public static List<Paiement> parseList(String response){
+        try{
+            List<Paiement> paiements = new ArrayList<>();
+            Type listType = new TypeToken<List<Paiement>>() {
+            }.getType();
+            paiements = new Gson().fromJson(response, listType);
+            if(paiements == null || paiements.isEmpty()) return null;
+            return paiements;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }

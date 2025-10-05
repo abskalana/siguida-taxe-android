@@ -15,14 +15,19 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> listGroup;
     private HashMap<String, List<Entity>> listItem;
 
-    public MyExpandableListAdapter(List<Entity> entities, String locality) {
+    public static final String TYPE_ACTIVITY= "activity";
+    public static final String TYPE_STATUS= "status";
+    public static final String TYPE_NOM= "nom";
+
+    public MyExpandableListAdapter(List<Entity> entities, String type) {
         this.listItem = new HashMap<>();
         this.listGroup = new ArrayList<>();
         for (Entity e : entities) {
-            if (locality == null || (!locality.equalsIgnoreCase(e.getLocality()) && !locality.equalsIgnoreCase(e.getCity()))) {
-                continue;
-            }
-            String groupName = e.getLocality();
+
+            String groupName = e.getActivity();
+            if(TYPE_NOM.equalsIgnoreCase(type)) groupName = e.getContactNom();
+            if(TYPE_STATUS.equalsIgnoreCase(type)) groupName = e.getPaiementStatus();
+
             if (!listGroup.contains(groupName)) {
                 listGroup.add(groupName);
                 listItem.put(groupName, new ArrayList<>());

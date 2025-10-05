@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -26,7 +27,6 @@ import java.util.List;
 public class PayRechercheActivity extends BaseActivity implements LocationListener {
 
     private EditText editTextFilter;
-    private String locality;
     private ExpandableListView expandableListView;
 
     private EntityResponse entityResponse;
@@ -35,6 +35,8 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
     HashMap<String, List<Entity>> listItem;
     MyExpandableListAdapter adapter;
 
+    private String type = MyExpandableListAdapter.TYPE_ACTIVITY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +44,43 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
         editTextFilter = findViewById(R.id.editTextFilter);
         expandableListView = findViewById(R.id.expandableListView);
         entityResponse = LocalDatabase.instance().getRemoteModel();
+        String locality = PrefUtils.getString("place");
+        String title = "Paiement "+ locality +" - "+PrefUtils.getString("mois") + " "+ PrefUtils.getString("annee");
+        ((TextView)findViewById(R.id.title_paiement)).setText(title);
         allEntities = entityResponse.getEntities();
         listGroup = new ArrayList<>();
         listItem = new HashMap<>();
-        String locality = PrefUtils.getString("place");
-        adapter = new MyExpandableListAdapter(allEntities, locality);
-        expandableListView.setAdapter(adapter);
+
+        findViewById(R.id.btnParActivite).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter = new MyExpandableListAdapter(allEntities, MyExpandableListAdapter.TYPE_ACTIVITY);
+                expandableListView.setAdapter(adapter);
+                type =  MyExpandableListAdapter.TYPE_ACTIVITY;
+            }
+        });
+
+        findViewById(R.id.btnParNom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter = new MyExpandableListAdapter(allEntities, MyExpandableListAdapter.TYPE_NOM);
+                expandableListView.setAdapter(adapter);
+                type =  MyExpandableListAdapter.TYPE_NOM;
+
+            }
+        });
+
+        findViewById(R.id.btnParStatus).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter = new MyExpandableListAdapter(allEntities, MyExpandableListAdapter.TYPE_STATUS);
+                expandableListView.setAdapter(adapter);
+                type =  MyExpandableListAdapter.TYPE_STATUS;
+            }
+        });
+
+
+
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
@@ -80,13 +113,12 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
                         filtered.add(e);
                     }
                 }
-                adapter = new MyExpandableListAdapter(filtered, locality);
+                adapter = new MyExpandableListAdapter(filtered, type);
                 expandableListView.setAdapter(adapter);
             }
         });
 
     }
-
 
     @Override
     public void onLocationChanged(@NonNull Location locations) {

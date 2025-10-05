@@ -13,9 +13,9 @@
         <TextView
 
             android:layout_width="match_parent"
-            android:layout_height="60sp"
+            android:layout_height="50sp"
             android:gravity="center"
-            android:layout_marginBottom="30sp"
+            android:layout_marginBottom="10sp"
             android:text="Configuration"
             android:textSize="24sp"
             android:textStyle="normal|bold">
@@ -77,6 +77,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/place_array" />
+
+
+        <TextView
+            android:text="Année"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/edittext_annee"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLength="4"
+            android:inputType="number" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="Mois paiement" />
+
+        <Spinner
+            android:id="@+id/spinner_mois"
+            android:layout_marginBottom="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/ticket_months" />
 
 
         <Button

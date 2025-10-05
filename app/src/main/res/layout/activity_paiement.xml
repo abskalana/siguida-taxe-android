@@ -135,18 +135,17 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Ticket numero"
+                android:text="Ticket mois"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
 
-            <EditText
-                android:id="@+id/tv_ticket_num"
-
+            <Spinner
+                android:id="@+id/spinner_ticket_mois"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:entries="@array/ticket_months" />
 
         </LinearLayout>
 
@@ -168,7 +167,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="MONTANT"
+                android:text="MONTANT TOTAL PAYÉ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
