@@ -41,6 +41,10 @@ public class PrefUtils {
         return preferences.getInt(key, 0);
     }
 
+    public static int getInt(String key, int fallback) {
+        return preferences.getInt(key, fallback);
+    }
+
     public static long getLong(String key) {
         return preferences.getLong(key, 0);
     }

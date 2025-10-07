@@ -9,6 +9,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gouandiaka.market.HttpHelper;
+import com.gouandiaka.market.utils.JsonSaver;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.R;
 import com.gouandiaka.market.utils.RequestListener;
@@ -18,7 +19,7 @@ import java.util.Calendar;
 
 public class ConfigActivity extends BaseActivity {
 
-    Spinner spinnerVille,spinnerNature,spinnerPlace, spinnerMoisPaiement;
+    Spinner spinnerVille,spinnerNature,spinnerPlace, spinnerMoisPaiement, spinnerTickeType;
 
     EditText editTextCommune, anneePaiement;
 
@@ -36,6 +37,8 @@ public class ConfigActivity extends BaseActivity {
         int villeNum = PrefUtils.getInt("ville_num");
         spinnerVille.setSelection(villeNum);
 
+        spinnerTickeType = findViewById(R.id.spinner_ticket_type_config);
+
         int placeNum = PrefUtils.getInt("place_num");
         spinnerPlace.setSelection(placeNum);
         int defaultYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -45,8 +48,14 @@ public class ConfigActivity extends BaseActivity {
         int espaceNum = PrefUtils.getInt("espace_num");
         spinnerNature.setSelection(espaceNum);
 
-        int moiNum = PrefUtils.getInt("mois_num");
+
+
+        int currentMois = Calendar.getInstance().get(Calendar.MONTH);
+        int moiNum = PrefUtils.getInt("mois_num",currentMois+1);
         spinnerMoisPaiement.setSelection(moiNum);
+
+        int typeNum = PrefUtils.getInt("ticket_num");
+        spinnerTickeType.setSelection(typeNum);
 
        findViewById(R.id.btnConfigSave).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +85,12 @@ public class ConfigActivity extends BaseActivity {
                     Toast.makeText(ConfigActivity.this, "Selectionner un mois paiement", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                String ticket = spinnerTickeType.getSelectedItem().toString();
+                if(Utils.isSelectOrEmpty(ticket)){
+                    Toast.makeText(ConfigActivity.this, "Selectionner un mois type ticket", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String annee = anneePaiement.getEditableText().toString();
                 if(Utils.isEmpty(annee) || annee.length()!=4){
                     Toast.makeText(ConfigActivity.this, "Année incorrecte", Toast.LENGTH_SHORT).show();
@@ -95,17 +110,25 @@ public class ConfigActivity extends BaseActivity {
                 PrefUtils.save("annee",annee);
                 PrefUtils.save("place", place);
                 PrefUtils.save("espace", espace);
+                PrefUtils.save("ticket", ticket);
                 PrefUtils.setInt("espace_num", spinnerNature.getSelectedItemPosition());
                 PrefUtils.setInt("ville_num", spinnerVille.getSelectedItemPosition());
                 PrefUtils.setInt("place_num", spinnerPlace.getSelectedItemPosition());
                 PrefUtils.setInt("mois_num", spinnerMoisPaiement.getSelectedItemPosition());
+                PrefUtils.setInt("ticket_num", spinnerTickeType.getSelectedItemPosition());
+
                 PrefUtils.save("commune", "150202");
                 Toast.makeText(ConfigActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
                 finish();
-
-
             }
         });
+
+       findViewById(R.id.btnbackup).setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               JsonSaver.dumpFile(ConfigActivity.this);
+           }
+       });
     }
 
 }

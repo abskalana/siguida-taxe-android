@@ -16,6 +16,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
+
         <TextView
 
             android:layout_width="match_parent"
@@ -26,6 +28,7 @@
             android:textStyle="normal|bold">
 
         </TextView>
+
 
         <TextView
             android:layout_width="match_parent"
@@ -92,6 +95,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/type_entity" />
+
+        <EditText
+            android:layout_margin="5dp"
+            android:id="@+id/etnbrBoutique"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Numéro"
+            android:text="1"
+            android:inputType="number" />
 
 
         <Button

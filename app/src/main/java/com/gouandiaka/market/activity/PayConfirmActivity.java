@@ -24,14 +24,16 @@ import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 
+import java.util.List;
+
 public class PayConfirmActivity extends BaseActivity implements RequestListener {
 
     Entity entity;
-
+    private Spinner spinnerMois,spinnerTicket;
     private EditText editTextMontant, editTextCmt;
 
     private Paiement paiement;
-    private TextView phone1, phone2;
+    private TextView phone1, paiementStatus;
 
     private TextView gpsView;
 
@@ -46,10 +48,18 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
         entity = new Gson().fromJson(getIntent().getStringExtra("entity"), Entity.class);
         editTextCmt = findViewById(R.id.tv_comment);
         phone1 = ((TextView) findViewById(R.id.tv_telephone1));
-        phone2 = ((TextView) findViewById(R.id.tv_telephone2));
+        paiementStatus = ((TextView) findViewById(R.id.tv_paiement_status));
         gpsView = findViewById(R.id.gps_view);
         gpsView.setTextColor(Color.RED);
         editTextMontant = findViewById(R.id.tv_montant);
+
+        spinnerMois = ((Spinner) findViewById(R.id.spinner_ticket_mois));
+        spinnerMois.setSelection(PrefUtils.getInt("mois_num"));
+
+        spinnerTicket = ((Spinner) findViewById(R.id.spinner_ticket_type));
+        spinnerTicket.setSelection(PrefUtils.getInt("ticket_num"));
+
+
         waitingView = findViewById(R.id.waiting_view);
         paiement = new Paiement(PrefUtils.getInt("user_id"), entity.getId());
         ((TextView) findViewById(R.id.tv_nomcomplet)).setText(entity.getNomComplet());
@@ -64,17 +74,9 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                 }
             });
         }
-        if (entity.getTelephone2() != null) {
-            phone2.setVisibility(View.VISIBLE);
-            phone2.setText("Tel : " + entity.getTelephone2());
-            phone2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + entity.getTelephone2()));
-                    view.getContext().startActivity(intent);
-                }
-            });
-
+        paiementStatus.setText(Utils.getColoredStatus(entity.getPaiementStatus()));
+        if(entity.is_paie()){
+            findViewById(R.id.btn_process_paiement).setVisibility(View.GONE);
         }
         ((TextView) findViewById(R.id.tv_info)).setText(entity.getInfo());
         findViewById(R.id.btn_process_paiement).setOnClickListener(new View.OnClickListener() {
@@ -85,13 +87,13 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                     Toast.makeText(view.getContext(), "Selectionner un status paiement", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String ticketType = ((Spinner) findViewById(R.id.spinner_ticket_type)).getSelectedItem().toString();
+                String ticketType =spinnerTicket.getSelectedItem().toString();
                 if (Utils.isSelectOrEmpty(ticketType)) {
                     Toast.makeText(view.getContext(), "Selectionner un type ticket ", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                String ticketMois = ((Spinner) findViewById(R.id.spinner_ticket_mois)).getSelectedItem().toString();
+                String ticketMois = spinnerMois.getSelectedItem().toString();
                 if (Utils.isSelectOrEmpty(ticketMois)) {
                     Toast.makeText(view.getContext(), "Selectionner le mois ", Toast.LENGTH_SHORT).show();
                     return;
@@ -110,7 +112,7 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                 paiement.setCommentaire(editTextCmt.getEditableText().toString());
                 paiement.setTicketType(ticketType);
                 if (Paiement.isValid(paiement)) {
-                    waitingView.start();
+                    waitingView.start(PayConfirmActivity.this);
                     HttpHelper.sendPaiement(paiement, PayConfirmActivity.this);
                 } else {
                     Toast.makeText(view.getContext(), "Verifier les valeurs", Toast.LENGTH_SHORT).show();
@@ -130,8 +132,8 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
     }
 
     @Override
-    public void onSuccess(boolean b) {
-        waitingView.stop(b);
+    public void onSuccess(boolean b, List<Entity> entities) {
+        waitingView.stop(b,this);
         if(b){
             Toast.makeText(this,"paiement Envoyé avec success", Toast.LENGTH_SHORT).show();
         }else{

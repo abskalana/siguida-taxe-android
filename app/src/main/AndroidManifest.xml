@@ -38,6 +38,8 @@
 
         <activity android:name=".activity.MainActivity" />
 
+        <activity android:name=".activity.ChoiceActivity" />
+
         <activity android:name=".activity.PayRechercheActivity" />
 
 

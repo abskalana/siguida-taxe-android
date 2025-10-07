@@ -6,33 +6,37 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.gouandiaka.market.HttpHelper;
 import com.gouandiaka.market.LocalDatabase;
 import com.gouandiaka.market.R;
+import com.gouandiaka.market.WaitingView;
 import com.gouandiaka.market.entity.Entity;
-import com.gouandiaka.market.entity.EntityResponse;
 import com.gouandiaka.market.entity.MyExpandableListAdapter;
 import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class PayRechercheActivity extends BaseActivity implements LocationListener {
+public class PayRechercheActivity extends BaseActivity implements LocationListener, RequestListener {
 
     private EditText editTextFilter;
     private ExpandableListView expandableListView;
+    private WaitingView waitingView;
 
-    private EntityResponse entityResponse;
-    List<String> listGroup;
+    //private EntityResponse entityResponse;
+
     List<Entity> allEntities;
-    HashMap<String, List<Entity>> listItem;
+    private Button charger;
+
     MyExpandableListAdapter adapter;
 
     private String type = MyExpandableListAdapter.TYPE_ACTIVITY;
@@ -43,13 +47,12 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
         setContentView(R.layout.activity_payrecherche);
         editTextFilter = findViewById(R.id.editTextFilter);
         expandableListView = findViewById(R.id.expandableListView);
-        entityResponse = LocalDatabase.instance().getRemoteModel();
+        waitingView = findViewById(R.id.waiting_view);
+        charger = findViewById(R.id.btn_recharger);
+
         String locality = PrefUtils.getString("place");
         String title = "Paiement "+ locality +" - "+PrefUtils.getString("mois") + " "+ PrefUtils.getString("annee");
         ((TextView)findViewById(R.id.title_paiement)).setText(title);
-        allEntities = entityResponse.getEntities();
-        listGroup = new ArrayList<>();
-        listItem = new HashMap<>();
 
         findViewById(R.id.btnParActivite).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +79,14 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
                 adapter = new MyExpandableListAdapter(allEntities, MyExpandableListAdapter.TYPE_STATUS);
                 expandableListView.setAdapter(adapter);
                 type =  MyExpandableListAdapter.TYPE_STATUS;
+            }
+        });
+
+        charger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                waitingView.start(PayRechercheActivity.this);
+                HttpHelper.reloadEntity(PayRechercheActivity.this,PayRechercheActivity.this);
             }
         });
 
@@ -115,6 +126,9 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
                 }
                 adapter = new MyExpandableListAdapter(filtered, type);
                 expandableListView.setAdapter(adapter);
+                show();
+
+
             }
         });
 
@@ -125,5 +139,32 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
         String place = PrefUtils.getString("place", null);
         if (Utils.isEmpty(place)) return;
 
+    }
+
+    private void show(){
+        int groupCount = adapter.getGroupCount();
+        for (int i = 0; i < groupCount; i++) {
+            expandableListView.expandGroup(i);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupAdapter();
+    }
+    private void setupAdapter(){
+        allEntities = LocalDatabase.instance().getRemoteModel();
+        adapter = new MyExpandableListAdapter(allEntities, MyExpandableListAdapter.TYPE_ACTIVITY);
+        expandableListView.setAdapter(adapter);
+        charger.setText("Charger (" + allEntities.size() + " )");
+    }
+
+    @Override
+    public void onSuccess(boolean b,List<Entity> allEntities) {
+        waitingView.stop(b,this);
+        if(b){
+            setupAdapter();
+        }
     }
 }

@@ -2,26 +2,31 @@ package com.gouandiaka.market.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.widget.Toast;
+
 
 import com.google.gson.Gson;
 import com.gouandiaka.market.LocalDatabase;
-import com.gouandiaka.market.R;
+import com.gouandiaka.market.activity.ChoiceActivity;
 import com.gouandiaka.market.activity.ConfigActivity;
 import com.gouandiaka.market.activity.EnregistrementActivity;
 import com.gouandiaka.market.activity.MainActivity;
 import com.gouandiaka.market.activity.PayConfirmActivity;
 import com.gouandiaka.market.activity.PayRechercheActivity;
 import com.gouandiaka.market.entity.Entity;
-import com.gouandiaka.market.entity.EntityResponse;
 import com.gouandiaka.market.entity.Paiement;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Utils {
@@ -59,6 +64,12 @@ public class Utils {
         context.startActivity(intent);
     }
 
+    public static void launchChoiceActivity(Context context, Entity entity) {
+        Intent intent = new Intent(context, ChoiceActivity.class);
+        intent.putExtra("entity", new Gson().toJson(entity));
+        context.startActivity(intent);
+    }
+
     public static void launchConfigActivity(Context context) {
         if (!LocationUtils.isLocationGranted(context)) {
             Toast.makeText(context, "Il faut configurer GPS", Toast.LENGTH_SHORT).show();
@@ -84,13 +95,15 @@ public class Utils {
             return;
         }
 
-        EntityResponse res = LocalDatabase.instance().getRemoteModel();
-        if (res == null || res.getEntities().isEmpty()) {
-            Toast.makeText(context, "Il faut charger", Toast.LENGTH_SHORT).show();
-            return;
+        List<Entity> res = LocalDatabase.instance().getRemoteModel();
+        if (Utils.isNotEmptyList(res)) {
+
+            Intent intent = new Intent(context, PayRechercheActivity.class);
+            context.startActivity(intent);
+        }else{
+            Toast.makeText(context, "Il faut charger ou changer config", Toast.LENGTH_SHORT).show();
+
         }
-        Intent intent = new Intent(context, PayRechercheActivity.class);
-        context.startActivity(intent);
     }
 
     public static boolean isKalana(String ville) {
@@ -143,6 +156,32 @@ public class Utils {
     public static boolean isSelectOrEmpty(String str) {
         return Utils.isEmpty(str) || str.toLowerCase().startsWith("select");
     }
+
+    public static SpannableString getColoredStatus(String status) {
+        if(Utils.isEmpty(status)) status ="NON_DEMANDÉ";
+        SpannableString spannable = new SpannableString(status);
+        int color = Color.BLACK; // couleur par défaut
+
+        if ("PAYÉ".equalsIgnoreCase(status) || "PAYE_MAIRIE".equalsIgnoreCase(status)) {
+            color = Color.GREEN;
+        } else if ("REFUS".equalsIgnoreCase(status)) {
+            color = Color.RED;
+        } else if ("ABSENT".equalsIgnoreCase(status)
+                || "FERMÉ".equalsIgnoreCase(status)
+                || "AUTRE".equalsIgnoreCase(status)) {
+            color = Color.parseColor("#FFA500"); // orange
+        }
+
+        spannable.setSpan(
+                new ForegroundColorSpan(color),
+                0, status.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        return spannable;
+    }
+
+
 
     public static Location convertToLocation(String location) {
         try {
@@ -211,5 +250,14 @@ public class Utils {
 
 
     }
+
+    public static boolean isNotEmptyList(List<Entity> list) {
+        return list!= null && !list.isEmpty();
+    }
+
+    public static boolean isNotEmptyListPaiement(List<Paiement> list) {
+        return list!= null && !list.isEmpty();
+    }
+
 
 }

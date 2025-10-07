@@ -8,7 +8,7 @@
     </string-array>
 
     <string-array name="place_array">
-        <item>"Selectionner une place"</item>
+        <item>"Select un quartier"</item>
         <item>Kalana Centre</item>
         <item>Kalana Koko</item>
         <item>Kalana Kelibougou</item>
@@ -74,7 +74,7 @@
 
     <string-array name="propertie">
         <item>PRIVEE</item>
-        <item>ESPACE PUBLIC</item>
+        <item>ESPACE_PUBLIC</item>
         <item>MARCHE</item>
     </string-array>
 

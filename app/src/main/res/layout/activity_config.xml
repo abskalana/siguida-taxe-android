@@ -22,112 +22,179 @@
 
         </TextView>
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Commune"
             android:textSize="14sp" />
 
         <EditText
             android:id="@+id/etconfigCommune"
-            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20sp"
             android:text="150202"
             android:enabled="false"
             android:inputType="textPersonName" />
 
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
         <TextView
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lieu"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="Ville"
             android:textSize="14sp" />
 
         <Spinner
             android:id="@+id/spinnerville"
-            android:layout_marginBottom="20sp"
             android:entries="@array/locations_array"
-            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nature propriété"
-            android:textSize="14sp"
-            android:textStyle="normal" />
-
-        <Spinner
-            android:id="@+id/spinnerProperty"
-            android:layout_marginBottom="20sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/propertie" />
-
-
-        <TextView
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="14sp"
+
             android:text="Quartier" />
 
         <Spinner
             android:id="@+id/spinnerPlace"
-            android:layout_marginBottom="20sp"
-            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:entries="@array/place_array" />
 
+</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Propriété"
+                android:textSize="14sp"
+                android:textStyle="normal" />
+
+            <Spinner
+                android:id="@+id/spinnerProperty"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:entries="@array/propertie" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         <TextView
             android:text="Année"
+            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/edittext_annee"
+            android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:maxLength="4"
             android:inputType="number" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
         <TextView
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:text="Mois paiement" />
+
+            android:text="Mois" />
 
         <Spinner
             android:id="@+id/spinner_mois"
-            android:layout_marginBottom="20sp"
-            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:entries="@array/ticket_months" />
 
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="Ticket type" />
+
+        <Spinner
+            android:id="@+id/spinner_ticket_type_config"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/type_ticket" />
+
+    </LinearLayout>
+
 
         <Button
-            android:layout_marginTop="10sp"
+            android:layout_marginTop="20sp"
             android:id="@+id/btnConfigSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Valider" />
 
 
-        <LinearLayout
+        <Button
+            android:layout_marginTop="10sp"
+            android:id="@+id/btnbackup"
             android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_margin="20dp"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:text="Backup" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-        </LinearLayout>
+
+
 
     </LinearLayout>
 </ScrollView>

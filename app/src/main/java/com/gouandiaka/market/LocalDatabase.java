@@ -9,11 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.entity.Entity;
-import com.gouandiaka.market.entity.EntityResponse;
 import com.gouandiaka.market.entity.Paiement;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class LocalDatabase extends SQLiteOpenHelper {
@@ -79,6 +79,19 @@ public class LocalDatabase extends SQLiteOpenHelper {
         return response;
     }
 
+    public List<Entity> getBackupModel() {
+        Cursor cursor = db.query("table_model_backup", null, null, null, null, null, null, null);
+        List<Entity> response = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String data = cursor.getString(0);
+            Entity model = new Gson().fromJson(data, Entity.class);
+            response.add(model);
+        }
+        return response;
+    }
+
+
+
     public int getLocaleModelCount() {
         Cursor cursor = db.query("table_model", null, null, null, null, null, null, null);
         int result = 0;
@@ -113,7 +126,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         return result;
     }
 
-    public EntityResponse getRemoteModel() {
+    public List<Entity>  getRemoteModel() {
         Cursor cursor = db.query("table_remote_model", null, null, null, null, null, null, null);
         List<Entity> response = new ArrayList<>();
         if (cursor.moveToNext()) {
@@ -124,16 +137,24 @@ public class LocalDatabase extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        return new EntityResponse(response);
+        return response;
     }
 
-    public void addRemoveEntity(List<Entity> model) {
+    public void saveRemoteEntity(List<Entity> model) {
         db.delete("table_remote_model", null, null);
         ContentValues values = new ContentValues();
         values.put("time", System.currentTimeMillis());
         values.put("data", new Gson().toJson(model));
         db.insertWithOnConflict("table_remote_model", null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
+
+    public void addRemoteEntity(List<Entity> model) {
+        List<Entity> entities = getRemoteModel();
+        entities.addAll(model);
+        entities= new ArrayList<>(new HashSet<>(entities));
+        saveRemoteEntity(entities);
+    }
+
 
     public void savePaiement(Paiement paiement) {
         ContentValues values = new ContentValues();
@@ -145,6 +166,16 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
 
 
+    public List<Paiement> getBackupPaiement() {
+        Cursor cursor = db.query("table_paiement_model_backup", null, null, null, null, null, null, null);
+        List<Paiement> response = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String data = cursor.getString(0);
+            Paiement model = new Gson().fromJson(data, Paiement.class);
+            response.add(model);
+        }
+        return response;
+    }
 
     public List<Paiement> getPaiement() {
         Cursor cursor = db.query("table_paiement_model", null, null, null, null, null, null, null);

@@ -77,6 +77,6 @@ public class LoginActivity extends Activity {
 
     private boolean shoulRequest(){
         long time =  System.currentTimeMillis() -PrefUtils.getLong("time");
-        return time > 1000*60*60*23;
+        return time > 1000*60*60*8;
     }
 }

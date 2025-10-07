@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +35,10 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
             }
             listItem.get(groupName).add(e);
         }
+        Collections.sort(listGroup);
     }
+
+
 
     @Override
     public int getGroupCount() {
@@ -93,10 +97,10 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         Entity localePlace = Objects.requireNonNull(listItem.get(title)).get(childPosition);
         if (convertView instanceof PlacesItemView) {
             PlacesItemView placesItemView = (PlacesItemView) convertView;
-            placesItemView.reuse(localePlace.getContactNom(), localePlace.getContactPrenom(), localePlace.getContactPhone());
+            placesItemView.reuse(localePlace.getContactNom(), localePlace.getContactPrenom(), localePlace.getContactPhone(),localePlace.getPaiementStatus());
             return placesItemView;
         }
-        return new PlacesItemView(parent.getContext(), localePlace.getContactNom(), localePlace.getContactPrenom(), localePlace.getContactPhone());
+        return new PlacesItemView(parent.getContext(), localePlace.getContactNom(), localePlace.getContactPrenom(), localePlace.getContactPhone(),localePlace.getPaiementStatus());
 
     }
 

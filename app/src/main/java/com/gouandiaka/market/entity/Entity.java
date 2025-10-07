@@ -17,10 +17,18 @@ public class Entity {
     private String id;
     private final String commune;
 
+    private int numero;
     public String getId() {
         return id;
     }
 
+    public int getNumero() {
+        return numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
 
     private final String city;
 
@@ -159,7 +167,11 @@ public class Entity {
     }
 
     public String getNomComplet() {
-        return this.contactPrenom + " " + this.contactNom.toUpperCase();
+        return this.contactPrenom + " " + this.contactNom.toUpperCase() + " #"+this.numero;
+    }
+
+    public String getNomCompletTelephone() {
+        return this.contactPrenom + " " + this.contactNom.toUpperCase() + " #"+this.getTelephone1();
     }
 
     public String getTelephone1() {
@@ -184,18 +196,6 @@ public class Entity {
 
     public String getInfo() {
         return "#Porte : " + this.porte + " -  " + this.property.toUpperCase() + "  -  " + this.activity;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Entity entity = (Entity) o;
-        return Objects.equals(id, entity.id) && Objects.equals(commune, entity.commune) && Objects.equals(city, entity.city);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, commune, city);
     }
 
     public String toCsvRow() {
@@ -231,6 +231,28 @@ public class Entity {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Entity entity = (Entity) o;
+        return Objects.equals(id, entity.id) && Objects.equals(commune, entity.commune);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, commune);
+    }
+
+    public boolean is_paie(){
+        if(this.paiementStatus == null) return false;
+        return  "PAYÉ".equalsIgnoreCase(this.paiementStatus) ||"PAYE_MAIRIE".equalsIgnoreCase(this.paiementStatus);
+    }
+
+    public static boolean isValidEntity(Entity entity){
+        if(entity == null || entity.id == null) return false;
+        return !entity.isInCorrect();
     }
 }
 

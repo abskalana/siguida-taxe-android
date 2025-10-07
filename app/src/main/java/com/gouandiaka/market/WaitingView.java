@@ -1,10 +1,12 @@
 package com.gouandiaka.market;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -33,22 +35,28 @@ public class WaitingView extends LinearLayout {
         });
     }
 
-    public void start() {
+    public void start(Activity activity) {
         progressBar.setVisibility(VISIBLE);
         button.setVisibility(View.GONE);
         textView.setVisibility(GONE);
         this.setVisibility(VISIBLE);
         textView.setText(R.string.waiting_message);
+        activity.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        );
     }
 
-    public void stop(boolean success) {
+    public void stop(boolean success,Activity activity) {
         progressBar.setVisibility(GONE);
         if (success) {
             setVisibility(GONE);
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         } else {
             button.setVisibility(View.VISIBLE);
             textView.setVisibility(VISIBLE);
             textView.setText(R.string.error_loading);
         }
+
     }
 }
