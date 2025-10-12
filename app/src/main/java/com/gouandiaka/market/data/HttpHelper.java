@@ -3,7 +3,6 @@ package com.gouandiaka.market.data;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -225,7 +224,6 @@ public class HttpHelper {
             return entityList;
 
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         } finally {
             try {

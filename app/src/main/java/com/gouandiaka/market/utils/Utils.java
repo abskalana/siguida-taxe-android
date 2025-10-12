@@ -20,13 +20,11 @@ import com.gouandiaka.market.activity.PayRechercheActivity;
 import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.entity.Entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Utils {
 
-    public static Map<String, String> users = new HashMap<>();
+
 
 
     public static void launchEnregistrementActivity(Context context) {

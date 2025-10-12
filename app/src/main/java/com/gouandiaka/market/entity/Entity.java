@@ -138,17 +138,10 @@ public class Entity {
         return Utils.capitalizeFirst(contactPrenom);
     }
 
-    public String getTypeEntity() {
-        return typeEntity;
-    }
 
-    public int getPorte() {
-        return porte;
-    }
 
-    public String getStatus() {
-        return status;
-    }
+
+
 
     public int getUser() {
         return user;
@@ -162,9 +155,7 @@ public class Entity {
         return this.contactPrenom + " " + this.contactNom.toUpperCase() + " #"+this.numero;
     }
 
-    public String getNomCompletTelephone() {
-        return this.contactPrenom + " " + this.contactNom.toUpperCase() + " #"+this.getTelephone1();
-    }
+
 
     public String getTelephone1() {
         if (Utils.isEmpty(this.contactPhone)) return null;

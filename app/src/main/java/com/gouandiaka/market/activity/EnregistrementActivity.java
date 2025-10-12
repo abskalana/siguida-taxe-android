@@ -3,14 +3,11 @@ package com.gouandiaka.market.activity;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.gouandiaka.market.R;
 import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
@@ -57,58 +54,55 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
         editTextnbrPorte = findViewById(R.id.etnbrPorte);
         editTextNumero = findViewById(R.id.etnbrBoutique);
 
-       findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int numero = 1;
-                if (Utils.isEmpty(editTextNom.getEditableText().toString())) {
-                    editTextNom.setError("Nom incorrecte");
-                    Toast.makeText(EnregistrementActivity.this, "Nom incorrecte", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String num = editTextNumero.getEditableText().toString();
-                numero = Utils.convertToNumber(num,numero);
+       findViewById(R.id.btnSave).setOnClickListener(view -> {
+           int numero = 1;
+           if (Utils.isEmpty(editTextNom.getEditableText().toString())) {
+               editTextNom.setError("Nom incorrecte");
+               Toast.makeText(EnregistrementActivity.this, "Nom incorrecte", Toast.LENGTH_SHORT).show();
+               return;
+           }
+           String num = editTextNumero.getEditableText().toString();
+           numero = Utils.convertToNumber(num,numero);
 
-                model.setContactName(editTextNom.getEditableText().toString());
+           model.setContactName(editTextNom.getEditableText().toString());
 
-                if (Utils.isEmpty(editTextPreNom.getEditableText().toString())) {
-                    Toast.makeText(EnregistrementActivity.this, "Prenom incorrecte", Toast.LENGTH_SHORT).show();
-                    editTextPreNom.setError("Prenom incorrecte");
-                    return;
-                }
-                model.setContactPrenom(editTextPreNom.getEditableText().toString());
+           if (Utils.isEmpty(editTextPreNom.getEditableText().toString())) {
+               Toast.makeText(EnregistrementActivity.this, "Prenom incorrecte", Toast.LENGTH_SHORT).show();
+               editTextPreNom.setError("Prenom incorrecte");
+               return;
+           }
+           model.setContactPrenom(editTextPreNom.getEditableText().toString());
 
-                if (!Utils.isValidPhone(editTexttelephone.getEditableText().toString())) {
-                    editTexttelephone.setError("Telephone incorrecte");
-                    Toast.makeText(EnregistrementActivity.this, "Telephone incorrecte", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+           if (!Utils.isValidPhone(editTexttelephone.getEditableText().toString())) {
+               editTexttelephone.setError("Telephone incorrecte");
+               Toast.makeText(EnregistrementActivity.this, "Telephone incorrecte", Toast.LENGTH_SHORT).show();
+               return;
+           }
 
-                if (Utils.isEmpty(coord)) {
-                    Toast.makeText(EnregistrementActivity.this, "Coordonnée GPS incorrecte", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String activity =  spinnerCategories.getSelectedItem().toString();
-                if(Utils.isSelectOrEmpty(activity)){
-                    Toast.makeText(EnregistrementActivity.this, "Categorie incorrecte", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                model.setNumero(numero);
-                model.setContactPhone(editTexttelephone.getEditableText().toString());
-                model.setPorte(Utils.convertToNumber(editTextnbrPorte.getEditableText().toString(), 1));
-                model.setActivity(activity);
-                model.setTypeProperty(spinnerType.getSelectedItem().toString());
-                model.setStatus(spinnerEtat.getSelectedItem().toString());
-                model.setCoord(coord);
-                if(Validator.isValid(model)){
-                    HttpHelper.sendEnRegistrement(model,EnregistrementActivity.this);
-                    waitingView.start(EnregistrementActivity.this);
-                }else{
-                    Toast.makeText(view.getContext(), "Verifier les valeurs", Toast.LENGTH_SHORT).show();
-                }
+           if (Utils.isEmpty(coord)) {
+               Toast.makeText(EnregistrementActivity.this, "Coordonnée GPS incorrecte", Toast.LENGTH_SHORT).show();
+               return;
+           }
+           String activity =  spinnerCategories.getSelectedItem().toString();
+           if(Utils.isSelectOrEmpty(activity)){
+               Toast.makeText(EnregistrementActivity.this, "Categorie incorrecte", Toast.LENGTH_SHORT).show();
+               return;
+           }
+           model.setNumero(numero);
+           model.setContactPhone(editTexttelephone.getEditableText().toString());
+           model.setPorte(Utils.convertToNumber(editTextnbrPorte.getEditableText().toString(), 1));
+           model.setActivity(activity);
+           model.setTypeProperty(spinnerType.getSelectedItem().toString());
+           model.setStatus(spinnerEtat.getSelectedItem().toString());
+           model.setCoord(coord);
+           if(Validator.isValid(model)){
+               HttpHelper.sendEnRegistrement(model,EnregistrementActivity.this);
+               waitingView.start(EnregistrementActivity.this);
+           }else{
+               Toast.makeText(view.getContext(), "Verifier les valeurs", Toast.LENGTH_SHORT).show();
+           }
 
-            }
-        });
+       });
 
     }
 

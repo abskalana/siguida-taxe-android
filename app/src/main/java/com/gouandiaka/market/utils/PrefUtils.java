@@ -2,12 +2,10 @@ package com.gouandiaka.market.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.gouandiaka.market.R;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.Paiement;
 
@@ -15,14 +13,11 @@ import java.util.Calendar;
 
 public class PrefUtils {
 
-    public static final String KEY_LAST_LOCATION_UPDATE = "last_location_update";
+
     private static SharedPreferences preferences;
 
 
     public static void init(Context context) {
-        Resources res = context.getResources();
-        String[] months = res.getStringArray(R.array.ticket_months);
-
         preferences = context.getSharedPreferences("bamako_express_pref", 0);
     }
 

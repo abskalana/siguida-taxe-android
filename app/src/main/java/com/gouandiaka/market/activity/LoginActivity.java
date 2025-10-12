@@ -38,36 +38,33 @@ public class LoginActivity extends Activity {
         if(!Utils.isEmpty(saveUser)){
             editText.setText(saveUser);
         }
-        findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String userName = editText.getEditableText().toString().trim();
-                String monMotDePasse = passworeditT.getEditableText().toString().trim();
-                if(Utils.isEmpty(userName) || Utils.isEmpty(monMotDePasse)) return;
+        findViewById(R.id.btnSave).setOnClickListener(view -> {
+            String userName = editText.getEditableText().toString().trim();
+            String monMotDePasse = passworeditT.getEditableText().toString().trim();
+            if(Utils.isEmpty(userName) || Utils.isEmpty(monMotDePasse)) return;
 
-                progressBar.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
 
-                new Thread(() -> {
+            new Thread(() -> {
 
-                    int response = HttpHelper.login(HttpHelper.LOGIN_URL, userName, monMotDePasse);
+                int response = HttpHelper.login(HttpHelper.LOGIN_URL, userName, monMotDePasse);
 
-                    if (response >-1) {
-                        runOnUiThread(() -> {
-                            progressBar.setVisibility(View.GONE);
-                            PrefUtils.save("user",userName.trim());
-                            PrefUtils.setInt("user_id",response);
-                            PrefUtils.save("time",System.currentTimeMillis());
-                            Utils.launchAccueilActivity(LoginActivity.this,true);
+                if (response >-1) {
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        PrefUtils.save("user",userName.trim());
+                        PrefUtils.setInt("user_id",response);
+                        PrefUtils.save("time",System.currentTimeMillis());
+                        Utils.launchAccueilActivity(LoginActivity.this,true);
 
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(LoginActivity.this, "Erreur connexion", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                }).start();
-            }
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(LoginActivity.this, "Erreur connexion", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }).start();
         });
 
     }
