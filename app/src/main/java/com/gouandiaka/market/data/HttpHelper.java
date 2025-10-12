@@ -3,6 +3,7 @@ package com.gouandiaka.market.data;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -14,6 +15,8 @@ import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 import com.gouandiaka.market.utils.Validator;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -42,9 +45,19 @@ public class HttpHelper {
             attempt++;
 
             String content = postContent(urlString, jsonBody,null);
+            try{
+                JSONObject object = new JSONObject(content);
+                boolean entity = object.getBoolean("entity");
+                if(entity){
+                    LocalDatabase.instance().clearLocaldataEntity();
+                }
+                boolean paiement = object.getBoolean("paiement");
+                if(paiement){
+                    LocalDatabase.instance().clearLocalPaiement();
+                }
+                if(entity && paiement) return true;
+            }catch (Exception e){
 
-            if ("true".equalsIgnoreCase(content)) {
-                return true;
             }
 
             if (attempt < maxRetries) {

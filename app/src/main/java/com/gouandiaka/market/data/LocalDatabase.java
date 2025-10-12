@@ -127,9 +127,9 @@ public class LocalDatabase extends SQLiteOpenHelper {
         cursor.close();
         return response;
     }
-    public void clearLocaldata() {
+    public void clearLocaldataEntity() {
         db.delete("table_model", null, null);
-        db.delete("table_paiement_model", null, null);
+
 
     }
 
@@ -169,4 +169,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         return response;
     }
 
+    public void clearLocalPaiement() {
+        db.delete("table_paiement_model", null, null);
+    }
 }

@@ -3,12 +3,14 @@ package com.gouandiaka.market.activity;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.gouandiaka.market.R;
 import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
@@ -58,7 +60,6 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
        findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Entity model = PrefUtils.getEntity();
                 int numero = 1;
                 if (Utils.isEmpty(editTextNom.getEditableText().toString())) {
                     editTextNom.setError("Nom incorrecte");
@@ -98,8 +99,13 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
                 model.setTypeProperty(spinnerType.getSelectedItem().toString());
                 model.setStatus(spinnerEtat.getSelectedItem().toString());
                 model.setCoord(coord);
-                HttpHelper.sendEnRegistrement(model,EnregistrementActivity.this);
-                waitingView.start(EnregistrementActivity.this);
+                if(Validator.isValid(model)){
+                    HttpHelper.sendEnRegistrement(model,EnregistrementActivity.this);
+                    waitingView.start(EnregistrementActivity.this);
+                }else{
+                    Toast.makeText(view.getContext(), "Verifier les valeurs", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -126,7 +132,7 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
             Utils.launchChoiceActivity(this,remoteEntity);
             finish();
         }else{
-            if(model!=null)LocalDatabase.instance().addEntity(model);
+            if(Validator.isValid(model)) LocalDatabase.instance().addEntity(model);
 
         }
     }

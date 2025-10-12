@@ -83,7 +83,6 @@ public class MainActivity extends BaseActivity implements RequestListener  {
                     @Override
                     public void onSuccess(boolean b, Entity entityList) {
                         if(b){
-                            LocalDatabase.instance().clearLocaldata();
                             showState();
                         }
                         waitingView.stop(b,MainActivity.this);
@@ -100,7 +99,7 @@ public class MainActivity extends BaseActivity implements RequestListener  {
     @Override
     protected void onResume() {
         super.onResume();
-
+        showState();
 
 
     }
@@ -111,11 +110,7 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         charger.setText("Charger (" + c + " )");
         c = LocalDatabase.instance().getLocalPaiementCount();
         paiement.setText("Paiement (" + c + " )");
-        c = LocalDatabase.instance().getRemoteModelCount();
-        charger.setText("Charger (" + c + " )");
     }
-
-
 
     @Override
     public void onSuccess(boolean b,Entity entities) {
