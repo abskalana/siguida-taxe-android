@@ -46,7 +46,7 @@
 
         <LinearLayout
             android:padding="10dp"
-            android:background="@color/md_grey_500"
+            android:background="@color/md_grey_700"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -199,10 +199,18 @@
             android:text="Valider" />
 
 
+        <Button
+            android:layout_marginTop="20dp"
+            android:id="@+id/btn_paiement_retour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Retour" />
+
+
 
     </LinearLayout>
 
-        <com.gouandiaka.market.WaitingView
+        <com.gouandiaka.market.view.WaitingView
             android:id="@+id/waiting_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

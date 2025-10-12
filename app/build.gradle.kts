@@ -8,12 +8,11 @@ android {
 
     defaultConfig {
         applicationId = "com.gouandiaka.market"
-        minSdk = 19
+        minSdk = 23
         targetSdk = 35
         versionCode = 3
         versionName = "3.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -33,6 +32,5 @@ android {
 
 dependencies {
 
-    implementation(libs.appcompat)
     implementation(libs.gson)
 }

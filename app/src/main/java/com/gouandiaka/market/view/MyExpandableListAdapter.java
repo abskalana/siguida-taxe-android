@@ -1,8 +1,10 @@
-package com.gouandiaka.market.entity;
+package com.gouandiaka.market.view;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+
+import com.gouandiaka.market.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,8 +15,9 @@ import java.util.Objects;
 public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
 
-    private List<String> listGroup;
-    private HashMap<String, List<Entity>> listItem;
+    public static final String TYPE_LOCATION =  "location";
+    private final List<String> listGroup;
+    private final HashMap<String, List<Entity>> listItem;
 
     public static final String TYPE_ACTIVITY= "activity";
     public static final String TYPE_STATUS= "status";
@@ -28,6 +31,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
             String groupName = e.getActivity();
             if(TYPE_NOM.equalsIgnoreCase(type)) groupName = e.getContactNom();
             if(TYPE_STATUS.equalsIgnoreCase(type)) groupName = e.getPaiementStatus();
+            if(TYPE_LOCATION.equalsIgnoreCase(type)) groupName = "Dans les 100m";
 
             if (!listGroup.contains(groupName)) {
                 listGroup.add(groupName);
@@ -79,12 +83,13 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String groupTitle = (String) getGroup(groupPosition);
+        int size = getChildrenCount(groupPosition);
         if (convertView instanceof GroupingItemView) {
             GroupingItemView placeItemView = (GroupingItemView) convertView;
-            placeItemView.reuse(groupTitle);
+            placeItemView.reuse(groupTitle,size);
             return placeItemView;
         }
-        return new GroupingItemView(parent.getContext(), groupTitle);
+        return new GroupingItemView(parent.getContext(), groupTitle,size);
 
     }
 

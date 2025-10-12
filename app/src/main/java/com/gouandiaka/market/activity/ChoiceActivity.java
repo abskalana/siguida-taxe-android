@@ -1,31 +1,16 @@
 package com.gouandiaka.market.activity;
 
-import static android.view.View.VISIBLE;
-
-import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.google.gson.Gson;
-import com.gouandiaka.market.HttpHelper;
-import com.gouandiaka.market.LocalDatabase;
 import com.gouandiaka.market.R;
-import com.gouandiaka.market.WaitingView;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.utils.LocationUtils;
-import com.gouandiaka.market.utils.PrefUtils;
-import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
-
-import java.util.List;
+import com.gouandiaka.market.utils.Validator;
 
 public class ChoiceActivity extends BaseActivity  {
 
@@ -49,7 +34,7 @@ public class ChoiceActivity extends BaseActivity  {
         findViewById(R.id.btn_continue_paiement).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Entity.isValidEntity(remoteEntity)){
+                if(Validator.isValidRemote(remoteEntity)){
                     Utils.launchPayConfirmActivity(ChoiceActivity.this,remoteEntity);
                     finish();
                 }else{

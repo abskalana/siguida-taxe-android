@@ -39,7 +39,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Activité"
+            android:textSize="10dp"
+            android:text="Activity"
             android:backgroundTint="#2196F3" /> <!-- Bleu -->
 
         <Button
@@ -48,6 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Status"
+            android:textSize="10dp"
             android:textColor="#FFFFFF"
             android:backgroundTint="#4CAF50" /> <!-- Vert -->
 
@@ -58,8 +60,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="10dp"
             android:text="Nom"
             android:backgroundTint="#FF9800" /> <!-- Orange -->
+
+
+        <Button
+            android:id="@+id/btnProche"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="10dp"
+            android:text="100m"
+            android:backgroundTint="#4E0002" /> <!-- Bleu -->
 
     </LinearLayout>
 
@@ -87,7 +100,7 @@
         android:text="Charger" />
 </LinearLayout>
 
-    <com.gouandiaka.market.WaitingView
+    <com.gouandiaka.market.view.WaitingView
         android:id="@+id/waiting_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

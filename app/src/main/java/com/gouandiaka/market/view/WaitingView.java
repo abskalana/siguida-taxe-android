@@ -1,4 +1,4 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.view;
 
 
 import android.app.Activity;
@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.gouandiaka.market.R;
 
 
 public class WaitingView extends LinearLayout {
@@ -49,9 +51,9 @@ public class WaitingView extends LinearLayout {
 
     public void stop(boolean success,Activity activity) {
         progressBar.setVisibility(GONE);
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         if (success) {
             setVisibility(GONE);
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         } else {
             button.setVisibility(View.VISIBLE);
             textView.setVisibility(VISIBLE);

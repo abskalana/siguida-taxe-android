@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface RequestListener {
 
-    void onSuccess(boolean success,List<Entity> entities);
+    void onSuccess(boolean success,Entity  entity);
 
 }

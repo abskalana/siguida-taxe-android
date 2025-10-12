@@ -188,7 +188,7 @@
 
     </LinearLayout>
 
-    <com.gouandiaka.market.WaitingView
+    <com.gouandiaka.market.view.WaitingView
         android:id="@+id/waiting_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -14,7 +14,7 @@
         android:text="@string/waiting_message"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/md_black_1000"
+        android:textColor="@color/traffic_ralenti"
         android:gravity="center"
         android:visibility="gone"
         android:paddingBottom="16dp" />

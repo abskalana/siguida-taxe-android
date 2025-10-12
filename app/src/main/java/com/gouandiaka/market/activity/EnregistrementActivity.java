@@ -1,24 +1,20 @@
 package com.gouandiaka.market.activity;
 
-import static android.view.View.VISIBLE;
-
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 
-import com.gouandiaka.market.HttpHelper;
-import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.data.HttpHelper;
+import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.R;
-import com.gouandiaka.market.WaitingView;
+import com.gouandiaka.market.utils.Validator;
+import com.gouandiaka.market.view.WaitingView;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.PrefUtils;
@@ -46,11 +42,10 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enregistrement);
         model = PrefUtils.getEntity();
-        if (model.isInCorrect()) {
+        if (!Validator.isValid(model)) {
             Utils.launchConfigActivity(this);
             return;
         }
-
         gpsView = findViewById(R.id.gps_view);
         gpsView.setTextColor(Color.RED);
         waitingView = findViewById(R.id.waiting_view);
@@ -75,7 +70,6 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
                 }
                 String num = editTextNumero.getEditableText().toString();
                 numero = Utils.convertToNumber(num,numero);
-
 
                 model.setContactName(editTextNom.getEditableText().toString());
 
@@ -121,19 +115,17 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
     }
 
     @Override
-    public void onLocationChanged(@NonNull Location location) {
+    public void onLocationChanged(Location location) {
         super.onLocationChanged(location);
         gpsView.setText(this.coord);
         gpsView.setTextColor(Color.GREEN);
     }
 
     @Override
-    public void onSuccess(boolean b, List<Entity> entityList) {
+    public void onSuccess(boolean b, Entity remoteEntity) {
         waitingView.stop(b,EnregistrementActivity.this);
-        Log.i("xxxx", entityList.size()+ "");
-        if(Utils.isNotEmptyList(entityList)){
-            Entity remoteEntity = entityList.get(0);
-            Log.i("xxxx", entityList.size()+ ""+remoteEntity.toString());
+
+        if(remoteEntity!=null){
             Utils.launchChoiceActivity(this,remoteEntity);
             finish();
         }else{

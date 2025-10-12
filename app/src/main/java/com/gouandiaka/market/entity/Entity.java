@@ -1,15 +1,9 @@
 package com.gouandiaka.market.entity;
 
-import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.utils.Utils;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Entity {
@@ -59,12 +53,12 @@ public class Entity {
     private String coord;
 
     private String status = "OUVERT";
-    @SerializedName("status_paiement")
-    private String paiementStatus;
+    @SerializedName("paiement")
+    private Paiement paiement;
 
 
 
-    private int user;
+    private final int user;
 
 
     public Entity(String commune, String city, String locality, String property, int user) {
@@ -113,11 +107,8 @@ public class Entity {
         this.status = status;
     }
 
-    public boolean isInCorrect() {
-        return Utils.isEmpty(commune) || Utils.isEmpty(city) || Utils.isEmpty(property) || user < 0;
-    }
 
-    @NonNull
+
     public String toString() {
         return this.contactNom.trim() + "," + this.contactPrenom.trim() + "," + this.contactPhone.trim();
     }
@@ -176,58 +167,30 @@ public class Entity {
 
     public String getTelephone1() {
         if (Utils.isEmpty(this.contactPhone)) return null;
-        if (this.contactPhone.split(",").length > 0) return this.contactPhone.split(",")[0];
-        return null;
+        return this.contactPhone;
     }
 
-    public String getTelephone2() {
-        if (Utils.isEmpty(this.contactPhone)) return null;
-        if (this.contactPhone.split(",").length > 1) return this.contactPhone.split(",")[1];
-        return null;
+
+    public Paiement getPaiement() {
+        return paiement;
     }
 
-    public String getPaiementStatus() {
-        return paiementStatus;
-    }
-
-    public void setPaiementStatus(String paiementStatus) {
-        this.paiementStatus = paiementStatus;
+    public void setPaiement(Paiement paiement) {
+        this.paiement = paiement;
     }
 
     public String getInfo() {
         return "#Porte : " + this.porte + " -  " + this.property.toUpperCase() + "  -  " + this.activity;
     }
 
-    public String toCsvRow() {
-        return String.join(",",
-                city,
-                locality,
-                safe(activity),
-                property,
-                safe(contactNom),
-                safe(contactPrenom),
-                safe(contactPhone),
-                typeEntity,
-                String.valueOf(porte),
-                safe(coord),
-                status,
-                String.valueOf(user)
-        );
-    }
 
-    // Prevent null issues
-    private String safe(String value) {
-        return value == null ? "" : value;
-    }
-
-    public static List<Entity> parseList(String response){
+    public static Entity parseList(String response){
         try{
-            List<Entity> entities = new ArrayList<>();
-            Type listType = new TypeToken<List<Entity>>() {
-            }.getType();
-            entities = new Gson().fromJson(response, listType);
-            if(entities == null || entities.isEmpty()) return null;
-            return entities;
+            Entity entity=  new Gson().fromJson(response, Entity.class);
+            if(entity!=null && !Utils.isEmpty(entity.getId())){
+                return entity;
+            }
+            return null;
         } catch (Exception e) {
             return null;
         }
@@ -237,22 +200,22 @@ public class Entity {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Entity entity = (Entity) o;
-        return Objects.equals(id, entity.id) && Objects.equals(commune, entity.commune);
+        return Objects.equals(id, entity.id) && Objects.equals(contactPhone, entity.contactPhone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, commune);
+        return Objects.hash(id, contactPhone);
     }
 
     public boolean is_paie(){
-        if(this.paiementStatus == null) return false;
-        return  "PAYÉ".equalsIgnoreCase(this.paiementStatus) ||"PAYE_MAIRIE".equalsIgnoreCase(this.paiementStatus);
+        if(this.paiement == null) return false;
+        return  "PAYÉ".equalsIgnoreCase(this.paiement.getStatus()) ||"PAYE_MAIRIE".equalsIgnoreCase(this.paiement.getStatus());
     }
 
-    public static boolean isValidEntity(Entity entity){
-        if(entity == null || entity.id == null) return false;
-        return !entity.isInCorrect();
+    public String getPaiementStatus() {
+        if(paiement == null|| Utils.isEmpty(paiement.getStatus())) return "NON_DEMANDÉ";
+        return paiement.getStatus();
     }
 }
 

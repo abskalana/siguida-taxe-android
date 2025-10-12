@@ -6,18 +6,19 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.gouandiaka.market.HttpHelper;
-import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.data.HttpHelper;
+import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.R;
-import com.gouandiaka.market.WaitingView;
+import com.gouandiaka.market.utils.Validator;
+import com.gouandiaka.market.view.WaitingView;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.Paiement;
 import com.gouandiaka.market.utils.PrefUtils;
@@ -33,35 +34,33 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
     private EditText editTextMontant, editTextCmt;
 
     private Paiement paiement;
+
+    private Spinner spinner;
     private TextView phone1, paiementStatus;
 
     private TextView gpsView;
 
     private WaitingView waitingView;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paiement);
         entity = new Gson().fromJson(getIntent().getStringExtra("entity"), Entity.class);
+        spinner = findViewById(R.id.spinner_paiement);
+
         editTextCmt = findViewById(R.id.tv_comment);
-        phone1 = ((TextView) findViewById(R.id.tv_telephone1));
-        paiementStatus = ((TextView) findViewById(R.id.tv_paiement_status));
+        phone1 = findViewById(R.id.tv_telephone1);
+        paiementStatus = findViewById(R.id.tv_paiement_status);
         gpsView = findViewById(R.id.gps_view);
         gpsView.setTextColor(Color.RED);
         editTextMontant = findViewById(R.id.tv_montant);
-
-        spinnerMois = ((Spinner) findViewById(R.id.spinner_ticket_mois));
-        spinnerMois.setSelection(PrefUtils.getInt("mois_num"));
-
-        spinnerTicket = ((Spinner) findViewById(R.id.spinner_ticket_type));
-        spinnerTicket.setSelection(PrefUtils.getInt("ticket_num"));
-
-
+        spinnerMois = findViewById(R.id.spinner_ticket_mois);
+        spinnerMois.setSelection(PrefUtils.getPrefPosition(spinnerMois,"mois"));
+        spinnerTicket = findViewById(R.id.spinner_ticket_type);
+        spinnerTicket.setSelection(PrefUtils.getPrefPosition(spinnerTicket,"ticket"));
         waitingView = findViewById(R.id.waiting_view);
-        paiement = new Paiement(PrefUtils.getInt("user_id"), entity.getId());
+
         ((TextView) findViewById(R.id.tv_nomcomplet)).setText(entity.getNomComplet());
         if (entity.getTelephone1() != null) {
             phone1.setVisibility(View.VISIBLE);
@@ -74,15 +73,34 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                 }
             });
         }
-        paiementStatus.setText(Utils.getColoredStatus(entity.getPaiementStatus()));
-        if(entity.is_paie()){
-            findViewById(R.id.btn_process_paiement).setVisibility(View.GONE);
+
+
+
+        if(entity.getPaiement()!=null){
+            this.paiement = entity.getPaiement();
+
+            editTextMontant.setText(String.valueOf(entity.getPaiement().getValue()));
+            spinner.setSelection(((ArrayAdapter)spinner.getAdapter()).getPosition(entity.getPaiementStatus()));
+            if(entity.is_paie()){
+                editTextMontant.setEnabled(false);
+                spinner.setEnabled(false);
+                spinnerTicket.setEnabled(false);
+                spinnerMois.setEnabled(false);
+                editTextCmt.setEnabled(false);
+                findViewById(R.id.btn_process_paiement).setVisibility(View.GONE);
+            }
+
+        }else{
+            this.paiement = PrefUtils.getPaiement(entity.getId());
         }
+
+        paiementStatus.setText(Utils.getColoredStatus(entity.getPaiementStatus()));
+
         ((TextView) findViewById(R.id.tv_info)).setText(entity.getInfo());
         findViewById(R.id.btn_process_paiement).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String status = ((Spinner) findViewById(R.id.spinner_paiement)).getSelectedItem().toString();
+                String status = spinner.getSelectedItem().toString();
                 if (Utils.isSelectOrEmpty(status)) {
                     Toast.makeText(view.getContext(), "Selectionner un status paiement", Toast.LENGTH_SHORT).show();
                     return;
@@ -100,7 +118,7 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                 }
 
                 String montant = editTextMontant.getEditableText().toString();
-                int value = Utils.convertToNumber(montant, -1);
+                int value = Utils.convertToNumber(montant,0 );
                 if (value < 100) {
                     Toast.makeText(view.getContext(), "montant incorrect", Toast.LENGTH_SHORT).show();
                     return;
@@ -111,7 +129,7 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                 paiement.setCoord(coord);
                 paiement.setCommentaire(editTextCmt.getEditableText().toString());
                 paiement.setTicketType(ticketType);
-                if (Paiement.isValid(paiement)) {
+                if (Validator.isValid(paiement)) {
                     waitingView.start(PayConfirmActivity.this);
                     HttpHelper.sendPaiement(paiement, PayConfirmActivity.this);
                 } else {
@@ -121,10 +139,17 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
             }
         });
 
+        findViewById(R.id.btn_paiement_retour).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
 
     @Override
-    public void onLocationChanged(@NonNull Location location) {
+    public void onLocationChanged(Location location) {
         super.onLocationChanged(location);
         gpsView.setText(this.coord);
         gpsView.setTextColor(Color.GREEN);
@@ -132,12 +157,28 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
     }
 
     @Override
-    public void onSuccess(boolean b, List<Entity> entities) {
+    public void onSuccess(boolean b, Entity remoteEntity) {
         waitingView.stop(b,this);
-        if(b){
-            Toast.makeText(this,"paiement Envoyé avec success", Toast.LENGTH_SHORT).show();
+        if(Validator.isValid(remoteEntity)){
+            extracted(remoteEntity);
+            Toast.makeText(this,"paiement envoyé avec success", Toast.LENGTH_SHORT).show();
         }else{
-            if(paiement!=null)LocalDatabase.instance().savePaiement(paiement);
+            if(Validator.isValid(paiement))LocalDatabase.instance().savePaiement(paiement);
+        }
+    }
+
+    private void extracted(Entity entity) {
+        if(entity.is_paie()){
+            findViewById(R.id.btn_process_paiement).setVisibility(View.GONE);
+            editTextMontant.setText(String.valueOf(entity.getPaiement().getValue()));
+            spinner.setSelection(PrefUtils.getPrefPositionSpinner(spinner,entity.getPaiementStatus()));
+            editTextMontant.setEnabled(false);
+            spinner.setEnabled(false);
+            spinnerTicket.setEnabled(false);
+            spinnerMois.setEnabled(false);
+            editTextCmt.setEnabled(false);
+            findViewById(R.id.btn_paiement_retour).setVisibility(View.VISIBLE);
+            paiementStatus.setText(Utils.getColoredStatus(entity.getPaiementStatus()));
         }
     }
 }

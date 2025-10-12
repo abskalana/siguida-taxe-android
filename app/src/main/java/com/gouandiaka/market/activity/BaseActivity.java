@@ -8,11 +8,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.utils.LocationUtils;
+import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.Utils;
 
 public class BaseActivity extends Activity implements LocationListener {
@@ -21,9 +20,10 @@ public class BaseActivity extends Activity implements LocationListener {
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LocalDatabase.init(this);
+        PrefUtils.init(this);
     }
 
     @SuppressLint("MissingPermission")
@@ -42,7 +42,7 @@ public class BaseActivity extends Activity implements LocationListener {
     }
 
     @Override
-    public void onLocationChanged(@NonNull Location location) {
+    public void onLocationChanged(Location location) {
         this.coord = Utils.convertToString(location);
     }
 

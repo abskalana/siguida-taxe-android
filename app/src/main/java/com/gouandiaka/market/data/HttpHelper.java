@@ -1,17 +1,20 @@
-package com.gouandiaka.market;
+package com.gouandiaka.market.data;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.entity.Entity;
+import com.gouandiaka.market.entity.Localdata;
 import com.gouandiaka.market.entity.Paiement;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
+import com.gouandiaka.market.utils.Validator;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,36 +23,61 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 
 public class HttpHelper {
 
 
-    public static final String TYPE_ENTITY = "entity";
-    public static final String TYPE_PAYMENT = "paiement";
     public static final String REQUEST_POST = "https://siguidataxe.com/api/entity/create/";
+    public static final String REQUEST_POST_DATA = "https://siguidataxe.com/api/localdata/";
     public static final String REQUEST_PAIEMENT = "https://siguidataxe.com/api/paiement/create/";
     public static String LOGIN_URL = "https://siguidataxe.com/api/mobileauth/";
 
-    public static List<Entity> postEntity(String urlString, String jsonBody, String type) {
+
+    public static boolean postEntityForSuccess(String urlString, String jsonBody) {
         int maxRetries = 3;
         int retryDelay = 3000;
         int attempt = 0;
-        List<Entity> results = null;
-
-        while (!Utils.isNotEmptyList(results) && attempt < maxRetries) {
+        while (attempt < maxRetries) {
             attempt++;
 
-            String content = postContent(urlString, jsonBody);
+            String content = postContent(urlString, jsonBody,null);
+
+            if ("true".equalsIgnoreCase(content)) {
+                return true;
+            }
+
+            if (attempt < maxRetries) {
+                try {
+                    Thread.sleep(retryDelay);
+                } catch (Exception ie) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    public static Entity postEntity(String urlString, String jsonBody, String pk) {
+        int maxRetries = 3;
+        int retryDelay = 3000;
+        int attempt = 0;
+        while (attempt < maxRetries) {
+          attempt++;
+
+            String content = postContent(urlString, jsonBody,pk);
 
             if (!Utils.isEmpty(content)) {
-                results = Entity.parseList(content);
-                if (Utils.isNotEmptyList(results)) {
-                    LocalDatabase.instance().addRemoteEntity(results);
-                    return results;
+                Entity  entity = Entity.parseList(content);
+                if (entity!=null) {
+                    LocalDatabase.instance().addRemoteEntity(entity);
+                    return entity;
                 }
             }
 
@@ -63,27 +91,39 @@ public class HttpHelper {
             }
         }
 
-        return results;
+        return null;
     }
 
-    public static String postContent(String urlString, String jsonBody) {
+
+    public static String postContent(String urlString, String jsonBody, String pk) {
         HttpURLConnection connection = null;
         try {
-            URL url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
 
-            connection.setRequestMethod("POST");
+
+            if(!Utils.isEmpty(pk)){
+                if (!urlString.endsWith("/")) {
+                    urlString += "/";
+                }
+                URL url = new URL(urlString + pk+ "/");
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("PUT");
+            }else{
+                URL url = new URL(urlString);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+            }
+
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
             connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true);
 
 
             try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonBody.getBytes("utf-8");
+                byte[] input = jsonBody.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = in.readLine()) != null) {
@@ -117,7 +157,7 @@ public class HttpHelper {
 
             // Lire la réponse
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(), "UTF-8")
+                    new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)
             );
             StringBuilder response = new StringBuilder();
             String line;
@@ -151,6 +191,7 @@ public class HttpHelper {
 
             URL url = new URL(urlString + "?" + query);
 
+
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
@@ -162,7 +203,7 @@ public class HttpHelper {
             }
 
             // Lire la réponse
-            reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -188,14 +229,12 @@ public class HttpHelper {
     }
 
     public static void sendEnRegistrement(Entity entity, RequestListener requestListener) {
-        List<Entity> entities = new ArrayList<>();
-        entities.add(entity);
-        new Thread(() -> {
+       new Thread(() -> {
             Gson gson = new Gson();
-            String content = gson.toJson(entities);
-            List<Entity> b = HttpHelper.postEntity(HttpHelper.REQUEST_POST, content,TYPE_ENTITY);
+            String content = gson.toJson(entity);
+            Entity b = HttpHelper.postEntity(HttpHelper.REQUEST_POST, content,null);
             new Handler(Looper.getMainLooper()).post(() -> {
-                requestListener.onSuccess(Utils.isNotEmptyList(b),b);
+                if(requestListener!=null) requestListener.onSuccess(Validator.isValidRemote(b),b);
             });
         }).start();
     }
@@ -203,57 +242,17 @@ public class HttpHelper {
 
 
     public static void sendPaiement(Paiement paiement, RequestListener requestListener) {
-        List<Paiement> paiments = new ArrayList<>();
-        paiments.add(paiement);
-        new Thread(() -> {
+       new Thread(() -> {
             Gson gson = new Gson();
-            String content = gson.toJson(paiments);
-            List<Entity> b  = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT,content, TYPE_PAYMENT);
+            String content = gson.toJson(paiement);
+            Entity b  = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT,content, paiement.getId());
             new Handler(Looper.getMainLooper()).post(() -> {
-                requestListener.onSuccess(Utils.isNotEmptyList(b),b);
+                if(requestListener!=null) requestListener.onSuccess(Validator.isValidRemote(b),b);
             });
         }).start();
     }
 
-    public static void sendAll(Context context, RequestListener requestListener) {
-        List<Entity> entities = LocalDatabase.instance().getModel();
-        List<Paiement> paiements = LocalDatabase.instance().getPaiement();
-        if(entities.isEmpty() && paiements.isEmpty()){
-            Toast.makeText(context, "Vide",Toast.LENGTH_SHORT).show();
-            requestListener.onSuccess(true, new ArrayList<>());
-            return;
-        }
 
-
-        new Thread(() -> {
-            Gson gson = new Gson();
-            List<Entity> result = null;
-            boolean success = false;
-            if(Utils.isNotEmptyList(entities)){
-                String content = gson.toJson(entities);
-                result= HttpHelper.postEntity(HttpHelper.REQUEST_POST, content,TYPE_ENTITY);
-                if(Utils.isNotEmptyList(result)) {
-                    LocalDatabase.instance().clearLocaleTraffic();
-                    success = true;
-                }
-            }
-
-            if(Utils.isNotEmptyListPaiement(paiements)) {
-                String content = gson.toJson(paiements);
-                result = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT, content, TYPE_PAYMENT);
-                if (Utils.isNotEmptyList(result)) {
-                    success = Utils.isNotEmptyList(result);
-                    LocalDatabase.instance().clearPaiement();
-                }
-            }
-
-            boolean finalStatus = success;
-            List<Entity> finalResult = result;
-            new Handler(Looper.getMainLooper()).post(() -> {
-                requestListener.onSuccess(finalStatus, finalResult);
-            });
-        }).start();
-    }
 
     private static void loadEntity(String annee, String mois,String property, String locality,RequestListener requestListener) {
         new Thread(() -> {
@@ -261,7 +260,7 @@ public class HttpHelper {
             new Handler(Looper.getMainLooper()).post(() -> {
                 if(Utils.isNotEmptyList(response)){
                     LocalDatabase.instance().saveRemoteEntity(response);
-                    requestListener.onSuccess(true,response);
+                    requestListener.onSuccess(true,null);
                 }else{
                     requestListener.onSuccess(false, null);
                 }
@@ -272,12 +271,11 @@ public class HttpHelper {
 
 
     public static void reloadEntity(Context context, RequestListener requestListener){
-        int defaultYear = Calendar.getInstance().get(Calendar.YEAR);
-        String annee = PrefUtils.getString("annee", String.valueOf(defaultYear));
+        int annee = PrefUtils.getAnnee();
         String mois = PrefUtils.getString("mois");
-        if(Utils.isEmpty(annee) || Utils.isSelectOrEmpty(mois)) {
+        if(annee < 2025 || Utils.isSelectOrEmpty(mois)) {
             Toast.makeText(context,"Specifier l'année et le mois Config",Toast.LENGTH_SHORT).show();
-            requestListener.onSuccess(true, new ArrayList<>());
+            requestListener.onSuccess(true, null);
             return;
         }
 
@@ -285,12 +283,29 @@ public class HttpHelper {
         String locality = PrefUtils.getString("place");
         if(Utils.isSelectOrEmpty(property) || Utils.isSelectOrEmpty(locality)) {
             Toast.makeText(context,"Specifier le type propriete et le quartier Config",Toast.LENGTH_SHORT).show();
-            requestListener.onSuccess(true,new ArrayList<>());
+            requestListener.onSuccess(true,null);
             return;
         }
 
-        HttpHelper.loadEntity(annee, mois,property, locality,requestListener);
+        HttpHelper.loadEntity(String.valueOf(annee), mois,property, locality,requestListener);
 
+    }
+
+    public static void sendAll(RequestListener requestListener) {
+        List<Entity> entities = LocalDatabase.instance().getModel();
+        List<Paiement> paiements = LocalDatabase.instance().getPaiement();
+        if((entities == null || entities.isEmpty()) && (paiements == null || paiements.isEmpty())){
+            requestListener.onSuccess(true, null);
+        }
+        Localdata localdata = new Localdata(entities,paiements);
+        new Thread(() -> {
+            Gson gson = new Gson();
+            String content = gson.toJson(localdata);
+            boolean b = HttpHelper.postEntityForSuccess(HttpHelper.REQUEST_POST_DATA, content);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if(requestListener!=null) requestListener.onSuccess(b,null);
+            });
+        }).start();
     }
 
 }

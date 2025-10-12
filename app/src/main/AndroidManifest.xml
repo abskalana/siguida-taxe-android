@@ -21,6 +21,7 @@
 
         <activity
             android:name=".activity.LoginActivity"
+            android:screenOrientation="fullSensor"
             android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
@@ -41,17 +42,6 @@
         <activity android:name=".activity.ChoiceActivity" />
 
         <activity android:name=".activity.PayRechercheActivity" />
-
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
 
 
     </application>

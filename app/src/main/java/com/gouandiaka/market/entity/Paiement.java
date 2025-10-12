@@ -11,11 +11,20 @@ import java.util.List;
 
 public class Paiement {
 
+
+    private String id;
     @SerializedName("value")
     private int value;
 
     @SerializedName("mois")
     private String mois;
+
+    @SerializedName("period")
+    private String period;
+
+    @SerializedName("annee")
+    private int annee;
+
 
     @SerializedName("ticket_type")
     private String ticketType;
@@ -106,42 +115,28 @@ public class Paiement {
     }
 
 
-    public static boolean isValid(Paiement paiement) {
-        if (paiement == null || Math.min(paiement.user, paiement.value) < 0 || Utils.isEmpty(paiement.entityModel))
-            return false;
-        return !Utils.isEmpty(paiement.entityModel) && !Utils.isEmpty(paiement.ticketType);
+    public int getAnnee() {
+        return annee;
     }
 
-    public String toCsvRow() {
-        return String.join(",",
-                String.valueOf(value),
-                safe(mois),
-                safe(ticketType),
-                safe(status),
-                safe(entityModel),
-                String.valueOf(user),
-                safe(coord),
-                safe(commentaire)
-        );
+    public String getPeriod() {
+        return period;
     }
 
-    // Prevent nulls in CSV
-    private String safe(String value) {
-        return value == null ? "" : value;
+    public void setPeriod(String period) {
+        this.period = period;
     }
 
 
-    public static List<Paiement> parseList(String response){
-        try{
-            List<Paiement> paiements = new ArrayList<>();
-            Type listType = new TypeToken<List<Paiement>>() {
-            }.getType();
-            paiements = new Gson().fromJson(response, listType);
-            if(paiements == null || paiements.isEmpty()) return null;
-            return paiements;
-        } catch (Exception e) {
-            return null;
-        }
+    public void setAnnee(int annee) {
+        this.annee = annee;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

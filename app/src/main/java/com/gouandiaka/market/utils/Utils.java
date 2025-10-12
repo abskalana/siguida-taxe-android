@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 
 import com.google.gson.Gson;
-import com.gouandiaka.market.LocalDatabase;
+import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.activity.ChoiceActivity;
 import com.gouandiaka.market.activity.ConfigActivity;
 import com.gouandiaka.market.activity.EnregistrementActivity;
@@ -40,7 +40,7 @@ public class Utils {
             return;
         }
         Entity model = PrefUtils.getEntity();
-        if (model.isInCorrect()) {
+        if (!Validator.isValid(model)) {
             Toast.makeText(context, "Il faut configurer commune", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -85,13 +85,13 @@ public class Utils {
             return;
         }
         Entity model = PrefUtils.getEntity();
-        if (model.isInCorrect()) {
+        if (!Validator.isValid(model)) {
             Toast.makeText(context, "Il faut configurer Config", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (Utils.isEmpty(PrefUtils.getString("annee")) || Utils.isEmpty(PrefUtils.getString("mois"))) {
-            Toast.makeText(context, "Il faut année et mois Config", Toast.LENGTH_SHORT).show();
+        if (Utils.isEmpty(PrefUtils.getString("mois"))) {
+            Toast.makeText(context, "Il faut  mois Config", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -120,14 +120,8 @@ public class Utils {
         if (phone == null) return false;
         phone = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "");
         phone = phone.trim();
-        if (phone.length() != 8 && phone.length() != 17) return false;
-        String[] phones = phone.split(",");
-        boolean firstisOK = android.util.Patterns.PHONE.matcher(phones[0]).matches();
-        boolean seconisOK = true;
-        if (phones.length > 1) {
-            seconisOK = android.util.Patterns.PHONE.matcher(phones[1]).matches();
-        }
-        return firstisOK && seconisOK;
+        if (phone.length() != 8) return false;
+        return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
 
@@ -152,6 +146,8 @@ public class Utils {
 
         return latitude + ";" + longitude;
     }
+
+
 
     public static boolean isSelectOrEmpty(String str) {
         return Utils.isEmpty(str) || str.toLowerCase().startsWith("select");
@@ -198,64 +194,14 @@ public class Utils {
 
     }
 
-    public static void writeToCsv(String filePath, Entity entity) {
-        File file = new File(filePath);
-        boolean fileExists = file.exists();
-        try (FileWriter writer = new FileWriter(file, true)) {
-
-            if (!fileExists) {
-                writer.write("city,locality,activity,property,contactNom,contactPrenom,contactPhone,typeEntity,porte,coord,status,user\n");
-            }
-            writer.write(entity.toCsvRow() + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void writeToCsv(String filePath, Paiement entity) {
-        File file = new File(filePath);
-        boolean fileExists = file.exists();
-        try (FileWriter writer = new FileWriter(file, true)) {
-
-            if (!fileExists) {
-                writer.write("value,ticketNum,ticketType,status,entityModel,user,coord,commentaire\n");
-            }
-            writer.write(entity.toCsvRow() + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static boolean shoulRequestConfig(){
         long time =  System.currentTimeMillis() -PrefUtils.getLong("time");
         return time > 1000*60*60*23;
     }
 
-    private static void saveToFile(Context context, String fileName, String content) {
 
-        File filex = new File(context.getExternalFilesDir(null), fileName);
-        if (filex.exists()) {
-            filex.delete();
-        }
-
-        try {
-            File file = new File(context.getExternalFilesDir(null), fileName);
-            FileWriter writer = new FileWriter(file);
-            writer.write(content);
-            writer.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
     public static boolean isNotEmptyList(List<Entity> list) {
-        return list!= null && !list.isEmpty();
-    }
-
-    public static boolean isNotEmptyListPaiement(List<Paiement> list) {
         return list!= null && !list.isEmpty();
     }
 

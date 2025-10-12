@@ -2,8 +2,16 @@ package com.gouandiaka.market.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
+import com.gouandiaka.market.R;
 import com.gouandiaka.market.entity.Entity;
+import com.gouandiaka.market.entity.Paiement;
+
+import java.util.Calendar;
 
 public class PrefUtils {
 
@@ -12,6 +20,8 @@ public class PrefUtils {
 
 
     public static void init(Context context) {
+        Resources res = context.getResources();
+        String[] months = res.getStringArray(R.array.ticket_months);
 
         preferences = context.getSharedPreferences("bamako_express_pref", 0);
     }
@@ -55,8 +65,46 @@ public class PrefUtils {
         Entity model = new Entity(getString("commune"), PrefUtils.getString("ville"),
                 PrefUtils.getString("place"), PrefUtils.getString("espace"), PrefUtils.getInt("user_id"));
 
-        return model;
+        if(Validator.isValid(model))return model;
+        return null;
     }
 
+    public static Paiement getPaiement(String entity){
+        Paiement paiement = new Paiement(PrefUtils.getInt("user_id"), entity);
+        paiement.setAnnee(getAnnee());
+        paiement.setPeriod(getMois());
+        return paiement;
+    }
 
+    public static int getAnnee(){
+        return PrefUtils.getInt("annee", Calendar.getInstance().get(Calendar.YEAR));
+    }
+    public static String getMois(){
+        String mois = PrefUtils.getString("mois",null);
+        if(Utils.isEmpty(mois)) mois = Constant.MOIS_MAP.get(Calendar.getInstance().get(Calendar.MONTH));
+        return mois;
+    }
+
+    public static int getPrefPositionSpinner(Spinner spinner, String nom){
+        if( spinner == null || Utils.isSelectOrEmpty(nom)) return 0;
+        Adapter adapter = spinner.getAdapter();
+        if(adapter instanceof  ArrayAdapter){
+            ArrayAdapter arrayAdapter = (ArrayAdapter)adapter;
+            return arrayAdapter.getPosition(nom);
+        }
+        return 0;
+
+    }
+
+    public static int getPrefPosition(Spinner spinner, String key){
+        String nom  = PrefUtils.getString(key);
+        if( spinner == null || Utils.isSelectOrEmpty(nom)) return 0;
+        Adapter adapter = spinner.getAdapter();
+        if(adapter instanceof  ArrayAdapter){
+            ArrayAdapter arrayAdapter = (ArrayAdapter)adapter;
+            return arrayAdapter.getPosition(nom);
+        }
+        return 0;
+
+    }
 }

@@ -1,4 +1,4 @@
-package com.gouandiaka.market.entity;
+package com.gouandiaka.market.view;
 
 
 import android.content.Context;
@@ -18,7 +18,7 @@ public class PlacesItemView extends LinearLayout {
     public PlacesItemView(Context context, String itemName, String itemType, String itemLocality,String status) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.layout_item_place, this, true);
-        name = (TextView) findViewById(R.id.tv_taxi_name);
+        name = findViewById(R.id.tv_taxi_name);
         paiement = findViewById(R.id.tv_tatus);
         reuse(itemName, itemType, itemLocality,status);
 

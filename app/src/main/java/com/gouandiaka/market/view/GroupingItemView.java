@@ -1,4 +1,4 @@
-package com.gouandiaka.market.entity;
+package com.gouandiaka.market.view;
 
 
 import android.annotation.SuppressLint;
@@ -14,14 +14,14 @@ public class GroupingItemView extends LinearLayout {
 
     private final TextView name;
 
-    public GroupingItemView(Context context, String area) {
+    public GroupingItemView(Context context, String area, int size) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.layout_item_place_quartier, this, true);
-        name = (TextView) findViewById(R.id.tv_area_name);
-        reuse(area);
+        name = findViewById(R.id.tv_area_name);
+        reuse(area, size);
     }
 
-    public void reuse(final String s) {
-        name.setText(s);
+    public void reuse(final String s, int size) {
+        name.setText(s + "  ("+ size +") ");
     }
 }
