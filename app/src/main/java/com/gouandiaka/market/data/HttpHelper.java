@@ -3,7 +3,6 @@ package com.gouandiaka.market.data;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -24,8 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class HttpHelper {

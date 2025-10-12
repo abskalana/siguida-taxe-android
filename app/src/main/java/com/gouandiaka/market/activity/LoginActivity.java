@@ -7,10 +7,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.gouandiaka.market.R;
 import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.utils.PrefUtils;
-import com.gouandiaka.market.R;
 import com.gouandiaka.market.utils.Utils;
 
 public class LoginActivity extends Activity {

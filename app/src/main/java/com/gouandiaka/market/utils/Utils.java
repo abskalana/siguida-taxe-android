@@ -10,21 +10,16 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.widget.Toast;
 
-
 import com.google.gson.Gson;
-import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.activity.ChoiceActivity;
 import com.gouandiaka.market.activity.ConfigActivity;
 import com.gouandiaka.market.activity.EnregistrementActivity;
 import com.gouandiaka.market.activity.MainActivity;
 import com.gouandiaka.market.activity.PayConfirmActivity;
 import com.gouandiaka.market.activity.PayRechercheActivity;
+import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.entity.Entity;
-import com.gouandiaka.market.entity.Paiement;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

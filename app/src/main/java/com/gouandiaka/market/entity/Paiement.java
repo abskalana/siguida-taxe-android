@@ -1,13 +1,6 @@
 package com.gouandiaka.market.entity;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
-import com.gouandiaka.market.utils.Utils;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Paiement {
 

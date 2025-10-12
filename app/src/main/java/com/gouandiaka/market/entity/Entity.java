@@ -4,6 +4,7 @@ package com.gouandiaka.market.entity;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.gouandiaka.market.utils.Utils;
+
 import java.util.Objects;
 
 public class Entity {

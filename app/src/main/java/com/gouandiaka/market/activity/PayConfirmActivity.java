@@ -12,20 +12,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.gson.Gson;
+import com.gouandiaka.market.R;
 import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
-import com.gouandiaka.market.R;
-import com.gouandiaka.market.utils.Validator;
-import com.gouandiaka.market.view.WaitingView;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.Paiement;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
-
-import java.util.List;
+import com.gouandiaka.market.utils.Validator;
+import com.gouandiaka.market.view.WaitingView;
 
 public class PayConfirmActivity extends BaseActivity implements RequestListener {
 

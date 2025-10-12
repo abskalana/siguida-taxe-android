@@ -6,8 +6,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.R;
+import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.Utils;
 
 import java.util.Calendar;

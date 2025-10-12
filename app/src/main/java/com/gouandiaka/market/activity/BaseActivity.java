@@ -8,7 +8,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-
 import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.PrefUtils;

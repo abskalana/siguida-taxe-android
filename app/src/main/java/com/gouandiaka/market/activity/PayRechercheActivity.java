@@ -12,17 +12,16 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.gouandiaka.market.R;
 import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
-import com.gouandiaka.market.R;
-import com.gouandiaka.market.view.WaitingView;
 import com.gouandiaka.market.entity.Entity;
-import com.gouandiaka.market.view.MyExpandableListAdapter;
 import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
+import com.gouandiaka.market.view.MyExpandableListAdapter;
+import com.gouandiaka.market.view.WaitingView;
 
 import java.util.ArrayList;
 import java.util.List;
