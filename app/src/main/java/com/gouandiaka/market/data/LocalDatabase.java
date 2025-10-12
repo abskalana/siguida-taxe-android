@@ -10,11 +10,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.Paiement;
+import com.gouandiaka.market.utils.PrefUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class LocalDatabase extends SQLiteOpenHelper {
 
@@ -141,10 +143,22 @@ public class LocalDatabase extends SQLiteOpenHelper {
         db.insertWithOnConflict("table_remote_model", null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
+    public void clearRemote() {
+        db.delete("table_remote_model", null, null);
+        PrefUtils.clearContent();
+     }
+
     public void addRemoteEntity(Entity model) {
         List<Entity> entities = getRemoteModel();
+        if(model == null || entities == null) return;
+        for(Entity entity : entities){
+            if(entity == null) continue;
+            if(Objects.equals(entity,model)){
+                entities.remove(entity);
+                break;
+            }
+        }
         entities.add(model);
-        entities= new ArrayList<>(new HashSet<>(entities));
         saveRemoteEntity(entities);
     }
 

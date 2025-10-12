@@ -85,7 +85,7 @@ public class HttpHelper {
 
             if (!Utils.isEmpty(content)) {
                 Entity  entity = Entity.parseList(content);
-                if (entity!=null) {
+                if (Validator.isValidRemote(entity)) {
                     LocalDatabase.instance().addRemoteEntity(entity);
                     return entity;
                 }
@@ -145,7 +145,6 @@ public class HttpHelper {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         } finally {
             if (connection != null) connection.disconnect();
@@ -179,7 +178,6 @@ public class HttpHelper {
             return Integer.parseInt(response.toString());
 
         } catch (Exception e) {
-            e.printStackTrace();
             return -1;
         } finally {
             if (connection != null) connection.disconnect();
@@ -264,9 +262,21 @@ public class HttpHelper {
 
 
 
-    private static void loadEntity(String annee, String mois,String property, String locality,RequestListener requestListener) {
+
+
+    public static void reloadEntity(Context context, RequestListener requestListener){
+        int annee = PrefUtils.getAnnee();
+        String mois = PrefUtils.getMois();
+        String property = PrefUtils.getString("espace", "PRIVEE");
+        String locality = PrefUtils.getString("place");
+        if(annee < 2025 || Utils.isSelectOrEmpty(mois) || Utils.isSelectOrEmpty(property) || Utils.isSelectOrEmpty(locality)) {
+            Toast.makeText(context,"Config incorrect",Toast.LENGTH_SHORT).show();
+            requestListener.onSuccess(true,null);
+            return;
+        }
+
         new Thread(() -> {
-            List<Entity> response = HttpHelper.getEntities(HttpHelper.REQUEST_POST,annee,mois,property,locality);
+            List<Entity> response = HttpHelper.getEntities(HttpHelper.REQUEST_POST,String.valueOf(annee),mois,property,locality);
             new Handler(Looper.getMainLooper()).post(() -> {
                 if(Utils.isNotEmptyList(response)){
                     LocalDatabase.instance().saveRemoteEntity(response);
@@ -277,27 +287,6 @@ public class HttpHelper {
             });
 
         }).start();
-    }
-
-
-    public static void reloadEntity(Context context, RequestListener requestListener){
-        int annee = PrefUtils.getAnnee();
-        String mois = PrefUtils.getString("mois");
-        if(annee < 2025 || Utils.isSelectOrEmpty(mois)) {
-            Toast.makeText(context,"Specifier l'année et le mois Config",Toast.LENGTH_SHORT).show();
-            requestListener.onSuccess(true, null);
-            return;
-        }
-
-        String property = PrefUtils.getString("espace", "PRIVEE");
-        String locality = PrefUtils.getString("place");
-        if(Utils.isSelectOrEmpty(property) || Utils.isSelectOrEmpty(locality)) {
-            Toast.makeText(context,"Specifier le type propriete et le quartier Config",Toast.LENGTH_SHORT).show();
-            requestListener.onSuccess(true,null);
-            return;
-        }
-
-        HttpHelper.loadEntity(String.valueOf(annee), mois,property, locality,requestListener);
 
     }
 

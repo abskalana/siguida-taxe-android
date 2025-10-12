@@ -80,12 +80,12 @@ public class Entity {
 
 
     public void setContactName(String contactName) {
-        this.contactNom = contactName;
+        this.contactNom = Utils.capitalizeFirst(contactName);
     }
 
 
     public void setContactPrenom(String contactPrenom) {
-        this.contactPrenom = contactPrenom;
+        this.contactPrenom = Utils.capitalizeFirst(contactPrenom);
     }
 
 
@@ -131,11 +131,11 @@ public class Entity {
     }
 
     public String getContactNom() {
-        return contactNom;
+        return Utils.capitalizeFirst(contactNom);
     }
 
     public String getContactPrenom() {
-        return contactPrenom;
+        return Utils.capitalizeFirst(contactPrenom);
     }
 
     public String getTypeEntity() {
@@ -201,6 +201,7 @@ public class Entity {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Entity entity = (Entity) o;
+        if(id == null && entity.id == null) return Objects.equals(contactPhone, entity.contactPhone);
         return Objects.equals(id, entity.id) && Objects.equals(contactPhone, entity.contactPhone);
     }
 

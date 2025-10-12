@@ -84,8 +84,9 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
                     return;
                 }
 
-                if (coord == null) {
+                if (Utils.isEmpty(coord)) {
                     Toast.makeText(EnregistrementActivity.this, "Coordonnée GPS incorrecte", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 String activity =  spinnerCategories.getSelectedItem().toString();
                 if(Utils.isSelectOrEmpty(activity)){

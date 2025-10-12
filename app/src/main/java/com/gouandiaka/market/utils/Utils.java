@@ -194,7 +194,10 @@ public class Utils {
         return time > 1000*60*60*23;
     }
 
-
+    public static String capitalizeFirst(String str) {
+        if(isEmpty(str)) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
 
     public static boolean isNotEmptyList(List<Entity> list) {
         return list!= null && !list.isEmpty();

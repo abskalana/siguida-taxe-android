@@ -31,6 +31,10 @@ public class PrefUtils {
         preferences.edit().putString(key, token).apply();
     }
 
+    public static  void  clearContent(){
+
+    }
+
     public static void save(String key, long token) {
         preferences.edit().putLong(key, token).apply();
     }

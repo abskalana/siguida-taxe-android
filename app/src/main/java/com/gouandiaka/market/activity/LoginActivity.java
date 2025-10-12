@@ -26,8 +26,11 @@ public class LoginActivity extends Activity {
         EditText editText = findViewById(R.id.etidentifiant);
         PrefUtils.init(this);
         LocalDatabase.init(this);
-        if(!shoulRequest()){
+        PrefUtils.init(this);
+        if(!Utils.shoulRequestConfig()){
             Utils.launchAccueilActivity(LoginActivity.this,false);
+        }else{
+            LocalDatabase.instance().clearRemote();
         }
 
         progressBar = findViewById(R.id.progressBar);
@@ -67,11 +70,5 @@ public class LoginActivity extends Activity {
             }
         });
 
-    }
-
-
-    private boolean shoulRequest(){
-        long time =  System.currentTimeMillis() -PrefUtils.getLong("time");
-        return time > 1000*60*60*8;
     }
 }
