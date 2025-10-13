@@ -10,12 +10,14 @@ import com.gouandiaka.market.R;
 import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.entity.Entity;
+import com.gouandiaka.market.entity.Paiement;
 import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 import com.gouandiaka.market.view.WaitingView;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends BaseActivity implements RequestListener  {
 
@@ -32,7 +34,6 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         paiement = findViewById(R.id.label_paiement);
         waitingView = findViewById(R.id.waiting_view);
         save = findViewById(R.id.menu_enregistrer);
-        int defaultYear = Calendar.getInstance().get(Calendar.YEAR);
         findViewById(R.id.menu_gps).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +44,7 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         findViewById(R.id.menu_entity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Utils.shoulRequestConfig()){
+                if(Utils.shouldRequestConfig()){
                     Utils.launchConfigActivity(MainActivity.this);
                     return;
                 }
@@ -59,7 +60,7 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         findViewById(R.id.menu_paiement).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Utils.shoulRequestConfig()){
+                if(Utils.shouldRequestConfig()){
                     Utils.launchConfigActivity(MainActivity.this);
                     return;
                 }
@@ -78,8 +79,14 @@ public class MainActivity extends BaseActivity implements RequestListener  {
         findViewById(R.id.ic_menu_envoyer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                List<Entity> entities = LocalDatabase.instance().getModel();
+                List<Paiement> paiements = LocalDatabase.instance().getPaiement();
+                if((entities == null || entities.isEmpty()) && (paiements == null || paiements.isEmpty())){
+                    Toast.makeText(MainActivity.this, "Rien à envoyer",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 waitingView.start(MainActivity.this);
-                HttpHelper.sendAll(new RequestListener() {
+                HttpHelper.sendAll(entities,paiements,new RequestListener() {
                     @Override
                     public void onSuccess(boolean b, Entity entityList) {
                         if(b){

@@ -18,23 +18,28 @@ import com.gouandiaka.market.activity.MainActivity;
 import com.gouandiaka.market.activity.PayConfirmActivity;
 import com.gouandiaka.market.activity.PayRechercheActivity;
 import com.gouandiaka.market.data.LocalDatabase;
+import com.gouandiaka.market.entity.ApplicationConfig;
 import com.gouandiaka.market.entity.Entity;
 
 import java.util.List;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 public class Utils {
 
 
 
+    private static final int MIN_PHONE = 49999999;
+    private static final int MAX_PHONE = 99999999;
+
+    public static final String [] PHONES = new String[]{"000","123","122","121","112","111","222","333","444"};
 
     public static void launchEnregistrementActivity(Context context) {
-        if (!LocationUtils.isLocationGranted(context)) {
-            Toast.makeText(context, "Il faut configurer GPS", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Entity model = PrefUtils.getEntity();
-        if (!Validator.isValid(model)) {
-            Toast.makeText(context, "Il faut configurer commune", Toast.LENGTH_SHORT).show();
+        ApplicationConfig applicationConfig = LocalDatabase.instance().getConfig();
+        if(!Validator.isValid(applicationConfig)){
+            Toast.makeText(context, "Invalide configuration", Toast.LENGTH_SHORT).show();
             return;
         }
         Intent intent = new Intent(context, EnregistrementActivity.class);
@@ -73,24 +78,14 @@ public class Utils {
     }
 
     public static void launchPaiementActivity(Context context) {
-        if (!LocationUtils.isLocationGranted(context)) {
-            Toast.makeText(context, "Il faut configurer GPS", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Entity model = PrefUtils.getEntity();
-        if (!Validator.isValid(model)) {
-            Toast.makeText(context, "Il faut configurer Config", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (Utils.isEmpty(PrefUtils.getString("mois"))) {
-            Toast.makeText(context, "Il faut  mois Config", Toast.LENGTH_SHORT).show();
+        ApplicationConfig applicationConfig = LocalDatabase.instance().getConfig();
+        if(!Validator.isValid(applicationConfig)){
+            Toast.makeText(context, "Invalide configuration", Toast.LENGTH_SHORT).show();
             return;
         }
 
         List<Entity> res = LocalDatabase.instance().getRemoteModel();
         if (Utils.isNotEmptyList(res)) {
-
             Intent intent = new Intent(context, PayRechercheActivity.class);
             context.startActivity(intent);
         }else{
@@ -110,10 +105,16 @@ public class Utils {
     }
 
     public static boolean isValidPhone(String phone) {
-        if (phone == null) return false;
-        phone = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "");
+        if (Utils.isEmpty(phone)) return false;
+        if(isDefaultPhone(phone)) return true;
         phone = phone.trim();
         if (phone.length() != 8) return false;
+        long tel = -1;
+        try {
+            tel = Long.parseLong(phone);
+        }catch (Exception ignored){
+        }
+        if(tel < MIN_PHONE || tel > MAX_PHONE) return false;
         return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
@@ -187,9 +188,14 @@ public class Utils {
 
     }
 
-    public static boolean shoulRequestConfig(){
-        long time =  System.currentTimeMillis() -PrefUtils.getLong("time");
-        return time > 1000*60*60*23;
+    public static boolean shouldRequestConfig(){
+        ApplicationConfig applicationConfig = LocalDatabase.instance().getConfig();
+        long time =  System.currentTimeMillis() - applicationConfig.getLastTime();
+        boolean success =  time > 1000*60*60*8;
+        if(success){
+            LocalDatabase.instance().clearRemote();
+        }
+        return success;
     }
 
     public static String capitalizeFirst(String str) {
@@ -202,4 +208,26 @@ public class Utils {
     }
 
 
+    public static Date parseDate(String dateStr) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return sdf.parse(dateStr);
+        } catch (Exception e1) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                return sdf.parse(dateStr);
+            } catch (Exception e2) {
+                return null;
+            }
+        }
+    }
+
+    public static boolean isDefaultPhone(String phone){
+        for(String item: PHONES){
+            if(item.equalsIgnoreCase(phone)) return true;
+        }
+        return false;
+    }
 }

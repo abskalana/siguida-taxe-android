@@ -7,16 +7,28 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gouandiaka.market.R;
+import com.gouandiaka.market.data.HttpHelper;
+import com.gouandiaka.market.data.LocalDatabase;
+import com.gouandiaka.market.entity.ApplicationConfig;
+import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
+import com.gouandiaka.market.utils.Validator;
+import com.gouandiaka.market.view.WaitingView;
 
 import java.util.Calendar;
+import java.util.Objects;
 
-public class ConfigActivity extends BaseActivity {
+public class ConfigActivity extends BaseActivity implements RequestListener {
 
     private Spinner spinnerVille,spinnerNature,spinnerPlace, spinnerMoisPaiement, spinnerTickeType;
 
     private EditText anneePaiement;
+
+
+    private WaitingView waitingView;
+
 
 
     @Override
@@ -28,17 +40,14 @@ public class ConfigActivity extends BaseActivity {
         spinnerMoisPaiement = findViewById(R.id.spinner_mois);
         spinnerNature = findViewById(R.id.spinnerProperty);
         spinnerPlace=findViewById(R.id.spinnerPlace);
-        spinnerVille.setSelection(PrefUtils.getPrefPosition(spinnerVille,"ville"));
+        spinnerVille.setSelection(PrefUtils.getPrefPosition(spinnerVille,applicationConfig.getCity()));
         spinnerTickeType = findViewById(R.id.spinner_ticket_type_config);
-        spinnerPlace.setSelection(PrefUtils.getPrefPosition(spinnerPlace,"place"));
-        anneePaiement.setText(String.valueOf(PrefUtils.getAnnee()));
-        spinnerNature.setSelection(PrefUtils.getPrefPosition(spinnerNature,"espace"));
-        int currentMois = Calendar.getInstance().get(Calendar.MONTH);
-        int moiNum = PrefUtils.getPrefPosition(spinnerMoisPaiement,"mois");
-        if(moiNum == 0) moiNum = currentMois+1;
-        spinnerMoisPaiement.setSelection(moiNum);
-        spinnerTickeType.setSelection(PrefUtils.getPrefPosition(spinnerTickeType,"ticket"));
-
+        spinnerPlace.setSelection(PrefUtils.getPrefPosition(spinnerPlace,applicationConfig.getLocality()));
+        anneePaiement.setText(String.valueOf(applicationConfig.getAnnee()));
+        spinnerNature.setSelection(PrefUtils.getPrefPosition(spinnerNature,applicationConfig.getProperty()));
+        spinnerMoisPaiement.setSelection(PrefUtils.getPrefPosition(spinnerMoisPaiement,applicationConfig.getMois()));
+        spinnerTickeType.setSelection(PrefUtils.getPrefPosition(spinnerTickeType,applicationConfig.getTicketType()));
+        waitingView = findViewById(R.id.waiting_view);
        findViewById(R.id.btnConfigSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,9 +67,6 @@ public class ConfigActivity extends BaseActivity {
                     return;
                 }
 
-                if("ESPACE PUBLIC".equalsIgnoreCase(espace)){
-                    place = "Kalana";
-                }
 
                 String mois = spinnerMoisPaiement.getSelectedItem().toString();
                 if(Utils.isSelectOrEmpty(mois)){
@@ -70,7 +76,7 @@ public class ConfigActivity extends BaseActivity {
 
                 String ticket = spinnerTickeType.getSelectedItem().toString();
                 if(Utils.isSelectOrEmpty(ticket)){
-                    Toast.makeText(ConfigActivity.this, "Selectionner un mois type ticket", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ConfigActivity.this, "Selectionner un  type ticket", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String annee = anneePaiement.getEditableText().toString();
@@ -87,20 +93,35 @@ public class ConfigActivity extends BaseActivity {
                 if(!Utils.isKalana(ville)){
                     place = ville;
                 }
-                PrefUtils.save("ville",ville);
-                PrefUtils.save("mois",mois);
-                PrefUtils.setInt("annee",year);
-                PrefUtils.save("place", place);
-                PrefUtils.save("espace", espace);
-                PrefUtils.save("ticket", ticket);
+                applicationConfig.setAnnee(year);
+                applicationConfig.setCity(ville);
+                applicationConfig.setMois(mois);
+                applicationConfig.setLocality(place);
+                applicationConfig.setTicketType(ticket);
+                applicationConfig.setProperty(espace);
+                applicationConfig.setCommune(ApplicationConfig.COMMUNE);
 
-                PrefUtils.save("commune", "150202");
-                Toast.makeText(ConfigActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
-                finish();
+                if(Validator.isValid(applicationConfig)){
+                    LocalDatabase.instance().setConfig(applicationConfig);
+                    waitingView.start(ConfigActivity.this,"Rechargement des données");
+                    HttpHelper.reloadEntity(ConfigActivity.this,ConfigActivity.this);
+                }else{
+                    Toast.makeText(ConfigActivity.this, "Mauvaise configuration", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
 
     }
 
+    @Override
+    public void onSuccess(boolean success, Entity entity) {
+        waitingView.stop(success,this,"Error chargement des données ");
+        if(success){
+            Toast.makeText(ConfigActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+    }
 }

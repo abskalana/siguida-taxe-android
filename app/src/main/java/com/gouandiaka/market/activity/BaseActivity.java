@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.gouandiaka.market.data.LocalDatabase;
+import com.gouandiaka.market.entity.ApplicationConfig;
 import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.Utils;
@@ -16,6 +17,7 @@ import com.gouandiaka.market.utils.Utils;
 public class BaseActivity extends Activity implements LocationListener {
 
     protected String coord;
+    protected ApplicationConfig applicationConfig;
 
 
     @Override
@@ -23,12 +25,14 @@ public class BaseActivity extends Activity implements LocationListener {
         super.onCreate(savedInstanceState);
         LocalDatabase.init(this);
         PrefUtils.init(this);
+        applicationConfig = LocalDatabase.instance().getConfig();
     }
 
     @SuppressLint("MissingPermission")
     @Override
     protected void onResume() {
         super.onResume();
+        this.applicationConfig = LocalDatabase.instance().getConfig();
         LocationUtils.setupLocation(this);
         if (LocationUtils.isLocationGranted(this)) {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

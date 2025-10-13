@@ -45,7 +45,6 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
         setContentView(R.layout.activity_paiement);
         entity = new Gson().fromJson(getIntent().getStringExtra("entity"), Entity.class);
         spinner = findViewById(R.id.spinner_paiement);
-
         editTextCmt = findViewById(R.id.tv_comment);
         phone1 = findViewById(R.id.tv_telephone1);
         paiementStatus = findViewById(R.id.tv_paiement_status);
@@ -53,9 +52,9 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
         gpsView.setTextColor(Color.RED);
         editTextMontant = findViewById(R.id.tv_montant);
         spinnerMois = findViewById(R.id.spinner_ticket_mois);
-        spinnerMois.setSelection(PrefUtils.getPrefPosition(spinnerMois,"mois"));
+        spinnerMois.setSelection(PrefUtils.getPrefPosition(spinnerMois,applicationConfig.getMois()));
         spinnerTicket = findViewById(R.id.spinner_ticket_type);
-        spinnerTicket.setSelection(PrefUtils.getPrefPosition(spinnerTicket,"ticket"));
+        spinnerTicket.setSelection(PrefUtils.getPrefPosition(spinnerTicket,applicationConfig.getTicketType()));
         waitingView = findViewById(R.id.waiting_view);
 
         ((TextView) findViewById(R.id.tv_nomcomplet)).setText(entity.getNomComplet());
@@ -88,9 +87,8 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
             }
 
         }else{
-            this.paiement = PrefUtils.getPaiement(entity.getId());
+            this.paiement =  applicationConfig.getPaiement(entity.getId());;
         }
-
         paiementStatus.setText(Utils.getColoredStatus(entity.getPaiementStatus()));
 
         ((TextView) findViewById(R.id.tv_info)).setText(entity.getInfo());
@@ -168,7 +166,7 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
         if(entity.is_paie()){
             findViewById(R.id.btn_process_paiement).setVisibility(View.GONE);
             editTextMontant.setText(String.valueOf(entity.getPaiement().getValue()));
-            spinner.setSelection(PrefUtils.getPrefPositionSpinner(spinner,entity.getPaiementStatus()));
+            spinner.setSelection(PrefUtils.getPrefPosition(spinner,entity.getPaiementStatus()));
             editTextMontant.setEnabled(false);
             spinner.setEnabled(false);
             spinnerTicket.setEnabled(false);

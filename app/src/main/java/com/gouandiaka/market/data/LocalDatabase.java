@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.gouandiaka.market.entity.ApplicationConfig;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.Paiement;
 import com.gouandiaka.market.utils.PrefUtils;
+import com.gouandiaka.market.utils.Validator;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS table_model (data TEXT, time INTEGER );");
         db.execSQL("CREATE TABLE IF NOT EXISTS table_remote_model (data TEXT, time INTEGER );");
         db.execSQL("CREATE TABLE IF NOT EXISTS table_paiement_model (data TEXT, time INTEGER );");
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS table_config (data TEXT, time INTEGER );");
     }
 
     @Override
@@ -60,11 +62,45 @@ public class LocalDatabase extends SQLiteOpenHelper {
     }
 
     public void addEntity(Entity model) {
+        if(!Validator.isValid(model)) return;
+        List<Entity> entities = getModel();
+        db.delete("table_model", null, null);
+        for(Entity entity:entities){
+            if(Validator.isValid(entity) && !entity.equals(model)){
+                ContentValues values = new ContentValues();
+                values.put("time", System.currentTimeMillis());
+                values.put("data", new Gson().toJson(entity));
+                db.insertWithOnConflict("table_model", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            }
+        }
         ContentValues values = new ContentValues();
         values.put("time", System.currentTimeMillis());
         values.put("data", new Gson().toJson(model));
         db.insertWithOnConflict("table_model", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
+
+    }
+
+    public void setConfig(ApplicationConfig model) {
+        db.delete("table_config", null, null);
+        ContentValues values = new ContentValues();
+        values.put("time", System.currentTimeMillis());
+        values.put("data", new Gson().toJson(model));
+        db.insertWithOnConflict("table_config", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+    }
+
+    public ApplicationConfig getConfig() {
+        Cursor cursor = db.query("table_config", null, null, null, null, null, null, null);
+        ApplicationConfig model= ApplicationConfig.getDefault();
+        if (cursor.moveToNext()) {
+            String data = cursor.getString(0);
+            model = new Gson().fromJson(data, ApplicationConfig.class);
+        }
+        cursor.close();
+        if(Validator.isValid(model)) return model;
+
+        return ApplicationConfig.getDefault();
     }
 
     public List<Entity> getModel() {
@@ -144,7 +180,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
     public void clearRemote() {
         db.delete("table_remote_model", null, null);
-        PrefUtils.clearContent();
+
      }
 
     public void addRemoteEntity(Entity model) {
@@ -163,6 +199,17 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
 
     public void savePaiement(Paiement paiement) {
+        if(!Validator.isValid(paiement)) return;
+        List<Paiement> payments = getPaiement();
+        db.delete("table_paiement_model", null, null);
+        for(Paiement paiement1:payments){
+            if(Validator.isValid(paiement1) && !paiement1.equals(paiement)){
+                ContentValues values = new ContentValues();
+                values.put("time", System.currentTimeMillis());
+                values.put("data", new Gson().toJson(paiement1));
+                db.insertWithOnConflict("table_paiement_model", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            }
+        }
         ContentValues values = new ContentValues();
         values.put("time", System.currentTimeMillis());
         values.put("data", new Gson().toJson(paiement));

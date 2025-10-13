@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.gouandiaka.market.utils.Utils;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class Entity {
@@ -209,6 +210,11 @@ public class Entity {
     public String getPaiementStatus() {
         if(paiement == null|| Utils.isEmpty(paiement.getStatus())) return "NON_DEMANDÉ";
         return paiement.getStatus();
+    }
+
+    public Date getLastPaiementDate(){
+        if(paiement == null || paiement.getDate() == null) return null;
+        return Utils.parseDate(paiement.getDate());
     }
 }
 

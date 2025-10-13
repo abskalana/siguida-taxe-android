@@ -37,11 +37,7 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enregistrement);
-        model = PrefUtils.getEntity();
-        if (!Validator.isValid(model)) {
-            Utils.launchConfigActivity(this);
-            return;
-        }
+        model = applicationConfig.getEntity();
         gpsView = findViewById(R.id.gps_view);
         gpsView.setTextColor(Color.RED);
         waitingView = findViewById(R.id.waiting_view);
@@ -73,10 +69,14 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
            }
            model.setContactPrenom(editTextPreNom.getEditableText().toString());
 
-           if (!Utils.isValidPhone(editTexttelephone.getEditableText().toString())) {
+           String phone = editTexttelephone.getEditableText().toString().trim();
+           if (!Utils.isValidPhone(phone)) {
                editTexttelephone.setError("Telephone incorrecte");
                Toast.makeText(EnregistrementActivity.this, "Telephone incorrecte", Toast.LENGTH_SHORT).show();
                return;
+           }
+           if(Utils.isDefaultPhone(phone)){
+               phone = "111"+String.valueOf(System.currentTimeMillis());
            }
 
            if (Utils.isEmpty(coord)) {
@@ -89,7 +89,7 @@ public class EnregistrementActivity extends BaseActivity implements RequestListe
                return;
            }
            model.setNumero(numero);
-           model.setContactPhone(editTexttelephone.getEditableText().toString());
+           model.setContactPhone(phone);
            model.setPorte(Utils.convertToNumber(editTextnbrPorte.getEditableText().toString(), 1));
            model.setActivity(activity);
            model.setTypeProperty(spinnerType.getSelectedItem().toString());

@@ -2,6 +2,8 @@ package com.gouandiaka.market.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class Paiement {
 
 
@@ -37,9 +39,13 @@ public class Paiement {
     @SerializedName("commentaire")
     private String commentaire;
 
-    public Paiement(int user, String entityModel) {
+    @SerializedName("date_created")
+    private String date;
+
+    public Paiement(int user, String entityModel, int annee) {
         this.user = user;
         this.entityModel = entityModel;
+        this.annee = annee;
     }
 
     public int getValue() {
@@ -129,7 +135,33 @@ public class Paiement {
         return id;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Paiement paiement = (Paiement) o;
+        if(id==null && paiement.id == null){
+            return annee == paiement.annee && Objects.equals(mois, paiement.mois) && Objects.equals(period, paiement.period) && Objects.equals(status, paiement.status) && Objects.equals(entityModel, paiement.entityModel);
+         }else{
+           return Objects.equals(id, paiement.id);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, mois, period, annee, status, entityModel);
+    }
+
     public void setId(String id) {
         this.id = id;
     }
+
+
 }

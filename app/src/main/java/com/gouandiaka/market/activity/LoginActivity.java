@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.gouandiaka.market.R;
 import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
+import com.gouandiaka.market.entity.ApplicationConfig;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.Utils;
 
@@ -24,19 +25,16 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
         EditText passworeditT = findViewById(R.id.etPasswor);
         EditText editText = findViewById(R.id.etidentifiant);
-        PrefUtils.init(this);
         LocalDatabase.init(this);
-        PrefUtils.init(this);
-        if(!Utils.shoulRequestConfig()){
+        if(!Utils.shouldRequestConfig()){
             Utils.launchAccueilActivity(LoginActivity.this,false);
         }else{
             LocalDatabase.instance().clearRemote();
         }
-
+        ApplicationConfig applicationConfig = LocalDatabase.instance().getConfig();
         progressBar = findViewById(R.id.progressBar);
-        String saveUser = PrefUtils.getString("user");
-        if(!Utils.isEmpty(saveUser)){
-            editText.setText(saveUser);
+        if(!Utils.isEmpty(applicationConfig.getUserName())){
+            editText.setText(applicationConfig.getUserName());
         }
         findViewById(R.id.btnSave).setOnClickListener(view -> {
             String userName = editText.getEditableText().toString().trim();
@@ -52,9 +50,10 @@ public class LoginActivity extends Activity {
                 if (response >-1) {
                     runOnUiThread(() -> {
                         progressBar.setVisibility(View.GONE);
-                        PrefUtils.save("user",userName.trim());
-                        PrefUtils.setInt("user_id",response);
-                        PrefUtils.save("time",System.currentTimeMillis());
+                        applicationConfig.setUser(response);
+                        applicationConfig.setUserName(userName.trim());
+                        applicationConfig.setLastTime(System.currentTimeMillis());
+                        LocalDatabase.instance().setConfig(applicationConfig);
                         Utils.launchAccueilActivity(LoginActivity.this,true);
 
                     });

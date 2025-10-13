@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gouandiaka.market.R;
+import com.gouandiaka.market.utils.Utils;
 
 
 public class WaitingView extends LinearLayout {
@@ -38,11 +39,16 @@ public class WaitingView extends LinearLayout {
     }
 
     public void start(Activity activity) {
+        String message = activity.getString(R.string.waiting_message);
+        start(activity,message);
+    }
+
+    public void start(Activity activity,String message) {
         progressBar.setVisibility(VISIBLE);
         button.setVisibility(View.GONE);
         textView.setVisibility(GONE);
         this.setVisibility(VISIBLE);
-        textView.setText(R.string.waiting_message);
+        textView.setText(message);
         activity.getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
@@ -50,6 +56,11 @@ public class WaitingView extends LinearLayout {
     }
 
     public void stop(boolean success,Activity activity) {
+        this.stop(success,activity,activity.getString(R.string.error_loading));
+
+    }
+
+    public void stop(boolean success,Activity activity,String message) {
         progressBar.setVisibility(GONE);
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         if (success) {
@@ -57,7 +68,7 @@ public class WaitingView extends LinearLayout {
         } else {
             button.setVisibility(View.VISIBLE);
             textView.setVisibility(VISIBLE);
-            textView.setText(R.string.error_loading);
+            textView.setText(message);
         }
 
     }

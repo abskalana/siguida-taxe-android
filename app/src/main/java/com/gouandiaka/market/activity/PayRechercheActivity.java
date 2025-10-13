@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.gouandiaka.market.R;
 import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
+import com.gouandiaka.market.entity.ApplicationConfig;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.PrefUtils;
@@ -52,8 +53,7 @@ public class PayRechercheActivity extends BaseActivity implements LocationListen
         waitingView = findViewById(R.id.waiting_view);
         charger = findViewById(R.id.btn_recharger);
 
-        String locality = PrefUtils.getString("place");
-        String title = "Paiement "+ locality +" - "+PrefUtils.getString("mois") + " "+ PrefUtils.getAnnee();
+        String title = "Paiement "+ applicationConfig.getLocality() +" - "+applicationConfig.getMois() + " "+ applicationConfig.getAnnee();
         ((TextView)findViewById(R.id.title_paiement)).setText(title);
 
         findViewById(R.id.btnParActivite).setOnClickListener(new View.OnClickListener() {

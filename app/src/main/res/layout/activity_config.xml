@@ -4,6 +4,10 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_margin="20sp"
@@ -187,4 +191,13 @@
 
 
     </LinearLayout>
+
+        <com.gouandiaka.market.view.WaitingView
+            android:id="@+id/waiting_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="56dp"
+            android:visibility="gone" />
+
+    </FrameLayout>
 </ScrollView>

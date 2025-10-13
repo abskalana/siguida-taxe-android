@@ -3,10 +3,12 @@ package com.gouandiaka.market.data;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.gouandiaka.market.entity.ApplicationConfig;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.Localdata;
 import com.gouandiaka.market.entity.Paiement;
@@ -184,21 +186,19 @@ public class HttpHelper {
     }
 
     // --- GET pour récupérer la liste des entités ---
-    public static List<Entity> getEntities(String urlString, String annee, String mois, String property, String locality) {
+    private static List<Entity> getEntities(String urlString, ApplicationConfig config) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
         try {
 
             String query = String.format("annee=%s&mois=%s&prop=%s&loc=%s",
-                    URLEncoder.encode(annee, "UTF-8"),
-                    URLEncoder.encode(mois, "UTF-8"),
-                    URLEncoder.encode(property, "UTF-8"),
-                    URLEncoder.encode(locality, "UTF-8")
+                    URLEncoder.encode(String.valueOf(config.getAnnee()), "UTF-8"),
+                    URLEncoder.encode(config.getMois(), "UTF-8"),
+                    URLEncoder.encode(config.getProperty(), "UTF-8"),
+                    URLEncoder.encode(config.getLocality(), "UTF-8")
             );
 
             URL url = new URL(urlString + "?" + query);
-
-
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
@@ -263,18 +263,17 @@ public class HttpHelper {
 
 
     public static void reloadEntity(Context context, RequestListener requestListener){
-        int annee = PrefUtils.getAnnee();
-        String mois = PrefUtils.getMois();
-        String property = PrefUtils.getString("espace", "PRIVEE");
-        String locality = PrefUtils.getString("place");
-        if(annee < 2025 || Utils.isSelectOrEmpty(mois) || Utils.isSelectOrEmpty(property) || Utils.isSelectOrEmpty(locality)) {
+
+        ApplicationConfig applicationConfig = LocalDatabase.instance().getConfig();
+        if(!Validator.isValid(applicationConfig)){
             Toast.makeText(context,"Config incorrect",Toast.LENGTH_SHORT).show();
             requestListener.onSuccess(true,null);
             return;
         }
 
+
         new Thread(() -> {
-            List<Entity> response = HttpHelper.getEntities(HttpHelper.REQUEST_POST,String.valueOf(annee),mois,property,locality);
+            List<Entity> response = HttpHelper.getEntities(HttpHelper.REQUEST_POST,applicationConfig);
             new Handler(Looper.getMainLooper()).post(() -> {
                 if(Utils.isNotEmptyList(response)){
                     LocalDatabase.instance().saveRemoteEntity(response);
@@ -288,12 +287,8 @@ public class HttpHelper {
 
     }
 
-    public static void sendAll(RequestListener requestListener) {
-        List<Entity> entities = LocalDatabase.instance().getModel();
-        List<Paiement> paiements = LocalDatabase.instance().getPaiement();
-        if((entities == null || entities.isEmpty()) && (paiements == null || paiements.isEmpty())){
-            requestListener.onSuccess(true, null);
-        }
+    public static void sendAll(List<Entity> entities,List<Paiement> paiements,RequestListener requestListener) {
+
         Localdata localdata = new Localdata(entities,paiements);
         new Thread(() -> {
             Gson gson = new Gson();

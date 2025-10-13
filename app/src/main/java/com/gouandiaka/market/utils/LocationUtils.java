@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import com.gouandiaka.market.entity.Entity;
+import com.gouandiaka.market.entity.EntityComparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,16 @@ public class LocationUtils {
                 entityList.add(entity);
             }
         }
+        EntityComparator.sort(entities,EntityComparator.SORT_DISTANCE,coord);
         return entityList;
+    }
+
+    public static double getDistanceLocation(Entity entity, Location myLocation){
+        if(entity == null ) return  Double.MAX_VALUE;
+        Location location = Utils.convertToLocation(entity.getCoord());
+        if(location != null && myLocation != null){
+            return location.distanceTo(myLocation);
+        }
+        return Double.MAX_VALUE;
     }
 }

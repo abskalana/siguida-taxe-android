@@ -5,6 +5,8 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
 import com.gouandiaka.market.entity.Entity;
+import com.gouandiaka.market.entity.EntityComparator;
+import com.gouandiaka.market.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +29,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         this.listItem = new HashMap<>();
         this.listGroup = new ArrayList<>();
         for (Entity e : entities) {
-
             String groupName = e.getActivity();
             if(TYPE_NOM.equalsIgnoreCase(type)) groupName = e.getContactNom();
             if(TYPE_STATUS.equalsIgnoreCase(type)) groupName = e.getPaiementStatus();
@@ -40,6 +41,10 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
             listItem.get(groupName).add(e);
         }
         Collections.sort(listGroup);
+        if(TYPE_STATUS.equalsIgnoreCase(type) && Utils.isNotEmptyList(listItem.get("PAYÉ"))){
+            Collections.sort(Objects.requireNonNull(listItem.get("PAYÉ")), new EntityComparator(EntityComparator.SORT_STATUS));
+        }
+
     }
 
 
