@@ -78,4 +78,22 @@ public class LocationUtils {
         }
         return Double.MAX_VALUE;
     }
+
+    public static void launchGooglemap(Context context, String coord,String label){
+        if(Utils.isEmpty(coord)) return ;
+        coord = coord.replace(";",",");
+        String uri = "geo:" + coord + "?q=" + coord + "(" + Uri.encode(label) + ")";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setPackage("com.google.android.apps.maps");
+        context.startActivity(intent);
+    }
+
+    public static void launchNavigation(Context context, String coord){
+        if(Utils.isEmpty(coord)) return ;
+        coord = coord.replace(";",",");
+        String uri = "google.navigation:q=" +coord;
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setPackage("com.google.android.apps.maps");
+        context.startActivity(intent);
+    }
 }

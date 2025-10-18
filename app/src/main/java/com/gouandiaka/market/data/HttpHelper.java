@@ -12,7 +12,6 @@ import com.gouandiaka.market.entity.ApplicationConfig;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.Localdata;
 import com.gouandiaka.market.entity.Paiement;
-import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
 import com.gouandiaka.market.utils.Validator;
@@ -185,7 +184,6 @@ public class HttpHelper {
         }
     }
 
-    // --- GET pour récupérer la liste des entités ---
     private static List<Entity> getEntities(String urlString, ApplicationConfig config) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
@@ -249,8 +247,7 @@ public class HttpHelper {
 
     public static void sendPaiement(Paiement paiement, RequestListener requestListener) {
        new Thread(() -> {
-            Gson gson = new Gson();
-            String content = gson.toJson(paiement);
+            String content = new Gson().toJson(paiement);
             Entity b  = HttpHelper.postEntity(HttpHelper.REQUEST_PAIEMENT,content, paiement.getId());
             new Handler(Looper.getMainLooper()).post(() -> {
                 if(requestListener!=null) requestListener.onSuccess(Validator.isValidRemote(b),b);

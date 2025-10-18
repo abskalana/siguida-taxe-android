@@ -18,6 +18,7 @@ import com.gouandiaka.market.data.HttpHelper;
 import com.gouandiaka.market.data.LocalDatabase;
 import com.gouandiaka.market.entity.Entity;
 import com.gouandiaka.market.entity.Paiement;
+import com.gouandiaka.market.utils.LocationUtils;
 import com.gouandiaka.market.utils.PrefUtils;
 import com.gouandiaka.market.utils.RequestListener;
 import com.gouandiaka.market.utils.Utils;
@@ -35,7 +36,7 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
     private Spinner spinner;
     private TextView phone1, paiementStatus;
 
-    private TextView gpsView;
+
 
     private WaitingView waitingView;
 
@@ -48,8 +49,8 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
         editTextCmt = findViewById(R.id.tv_comment);
         phone1 = findViewById(R.id.tv_telephone1);
         paiementStatus = findViewById(R.id.tv_paiement_status);
-        gpsView = findViewById(R.id.gps_view);
-        gpsView.setTextColor(Color.RED);
+
+
         editTextMontant = findViewById(R.id.tv_montant);
         spinnerMois = findViewById(R.id.spinner_ticket_mois);
         spinnerMois.setSelection(PrefUtils.getPrefPosition(spinnerMois,applicationConfig.getMois()));
@@ -69,12 +70,35 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                 }
             });
         }
+        findViewById(R.id.menu_location).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try{
+                    LocationUtils.launchGooglemap(PayConfirmActivity.this,entity.getCoord(),entity.getNomComplet());
+                } catch (Exception e) {
+                    Toast.makeText(PayConfirmActivity.this,"Impossible",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        findViewById(R.id.menu_menu_direction).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    LocationUtils.launchNavigation(PayConfirmActivity.this,entity.getCoord());
+                } catch (Exception e) {
+                    Toast.makeText(PayConfirmActivity.this,"Impossible",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
 
 
         if(entity.getPaiement()!=null){
             this.paiement = entity.getPaiement();
-
+            editTextCmt.setText(this.paiement.getCommentaire());
             editTextMontant.setText(String.valueOf(entity.getPaiement().getValue()));
             spinner.setSelection(((ArrayAdapter)spinner.getAdapter()).getPosition(entity.getPaiementStatus()));
             if(entity.is_paie()){
@@ -83,6 +107,8 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
                 spinnerTicket.setEnabled(false);
                 spinnerMois.setEnabled(false);
                 editTextCmt.setEnabled(false);
+                ((TextView)findViewById(R.id.tv_time)).setVisibility(View.VISIBLE);
+                ((TextView)findViewById(R.id.tv_time)).setText(paiement.getDate());
                 findViewById(R.id.btn_process_paiement).setVisibility(View.GONE);
             }
 
@@ -146,8 +172,7 @@ public class PayConfirmActivity extends BaseActivity implements RequestListener 
     @Override
     public void onLocationChanged(Location location) {
         super.onLocationChanged(location);
-        gpsView.setText(this.coord);
-        gpsView.setTextColor(Color.GREEN);
+
 
     }
 
